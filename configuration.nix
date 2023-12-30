@@ -15,7 +15,7 @@
   boot.loader.grub.device = "/dev/vda";
   boot.loader.grub.useOSProber = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "blackwolf-nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -54,7 +54,14 @@
   # Enable the XFCE Desktop Environment.
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
-
+  
+  # enable flatpak
+  services.flatpak.enable = true;
+  xdg.portal.enable = true;
+  
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg.portal.config.common.default = "gtk";
+  
   # Configure keymap in X11
   services.xserver = {
     layout = "us";
@@ -103,6 +110,7 @@
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
+    nix-bash-completions
     curl
     git
     vim
@@ -117,12 +125,28 @@
     dunst
     pavucontrol
     jgmenu
+    zsh-completions
+    nix-zsh-completions
     zsh
     nitrogen
-    bash
     pfetch
     neofetch
+    neovim
     picom
+    networkmanager_dmenu
+    papirus-folders
+    papirus-nord
+    sweet
+    clipmenu
+    volumeicon
+    hermit
+    source-code-pro
+    terminus_font
+    ranger
+    i3status
+    pcsctools
+    ccid
+    opensc
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
