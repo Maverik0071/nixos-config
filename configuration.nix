@@ -54,7 +54,7 @@
   # Enable the XFCE Desktop Environment.
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
-  
+
   # enable flatpak
   services.flatpak.enable = true;
   xdg.portal.enable = true;
@@ -98,12 +98,20 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       firefox
+      neovim
     #  thunderbird
     ];
   };
 
+  # zsh terminal
+  programs.zsh.enable = true;
+  users.defaultUserShell = pkgs.zsh;
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  
+  # nix command settings
+  nix.settings.experimental-features = [ "nix-command" ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -111,6 +119,13 @@
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     nix-bash-completions
+    nix-zsh-completions
+    zsh-autocomplete
+    zsh-autosuggestions
+    zsh-powerlevel10k
+    zsh-syntax-highlighting
+    zsh-history-substring-search
+    zsh-fast-syntax-highlighting
     curl
     git
     vim
@@ -125,7 +140,6 @@
     dunst
     pavucontrol
     jgmenu
-    zsh-completions
     nix-zsh-completions
     zsh
     nitrogen
@@ -147,6 +161,14 @@
     pcsctools
     ccid
     opensc
+    starship
+    vimPlugins.nvim-treesitter-textsubjects
+    nixos-install-tools
+    nodejs_21
+    lua
+    python3
+    clipit
+    
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
