@@ -2,14 +2,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-    ];
-
+      inputs.home-manager.nixosModules.default
+    ]; 
+    
   # Bootloader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/vda";
@@ -98,10 +99,18 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       firefox
+      vim
       neovim
+      chromium
     #  thunderbird
     ];
   };
+
+  
+
+  # for virtualization like gnome-boces or virt-manager
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
 
   # zsh terminal
   programs.zsh.enable = true;
@@ -110,14 +119,18 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   
-  # nix command settings
-  nix.settings.experimental-features = [ "nix-command" ];
+  # Enable Flakes and the command-line tool with nix command settings 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Set default editor to vim
+  environment.variables.EDITOR = "neovim";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
+  # vim # Do not forget to add an editor to edit configuration.nix! The Nano editor   is also installed by default.
+  #
+  # bash and zsh 
     nix-bash-completions
     nix-zsh-completions
     zsh-autocomplete
@@ -126,11 +139,14 @@
     zsh-syntax-highlighting
     zsh-history-substring-search
     zsh-fast-syntax-highlighting
+  #bootstrapping
+    wget
     curl
     git
     vim
     arandr
     pkgs.chromium
+   #i3wm pkgs
     dmenu
     rofi
     autotiling
@@ -153,15 +169,19 @@
     sweet
     clipmenu
     volumeicon
+   # fonts and themes
     hermit
     source-code-pro
     terminus_font
+    nerdfonts
+    terminus-nerdfont
     ranger
     i3status
     pcsctools
     ccid
     opensc
     starship
+   #vim and programming 
     vimPlugins.nvim-treesitter-textsubjects
     nixos-install-tools
     nodejs_21
@@ -170,10 +190,12 @@
     clipit
     rofi-power-menu
     blueberry
+   #misc
     pasystray
     tlp
   ];
 
+  # nix grub generations
   nix.gc = {
   automatic = true;
   dates = "weekly";
