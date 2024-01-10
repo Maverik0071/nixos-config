@@ -2,18 +2,43 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, modulesPath, lib, inputs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+      ./hardware-configuration.nix	
       inputs.home-manager.nixosModules.default
-    ]; 
-    
-  # Bootloader.
+    ];
+  
+  nix = {
+  package = pkgs.nixFlakes;
+  extraOptions = lib.optionalString (config.nix.package == pkgs.nixFlakes)
+    "experimental-features = nix-command flakes";
+    }; 
+   
+
+  #programs.neovim = {
+  #  enable = true;
+   
+  #  viAlias = true;
+  #  vimAlias = true;
+  #  vimdiffAlias = true; 
+  
+  # nixvim config
+  # {
+  #programs.nixvim = {
+  #  enable = true;
+  #  colorschemes.gruvbox.enable = true;
+  #  plugins.lightline.enable = true;
+  #    extraPlugins = with pkgs.vimPlugins; [
+  #    vim-nix
+  # };
+  # }    
+ 
+  # Bootloader
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/vda";
+  boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
   networking.hostName = "blackwolf-nixos"; # Define your hostname.
@@ -52,17 +77,18 @@
   #services.xserver.desktopManager.xterm.enabe = false;
   #services.xserver.displayManager.lightdm.enable = true;
   services.xserver.windowManager.i3.enable = true;
+  # services.xserver.displayManager.ly.enable = true;  
+ 
   # Enable the XFCE Desktop Environment.
-  services.xserver.displayManager.lightdm.enable = true;
+  # services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
-
+  
   # enable flatpak
   services.flatpak.enable = true;
   xdg.portal.enable = true;
   
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk];
   xdg.portal.config.common.default = "gtk";
-  
   # Configure keymap in X11
   services.xserver = {
     layout = "us";
@@ -86,7 +112,7 @@
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
-    # media-session.enable = true;
+    #media-session.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -98,26 +124,39 @@
     description = "densetsu";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      firefox
-      vim
-      neovim
-      chromium
+       vim
+       neovim
+       firefox
+       chromium
     #  thunderbird
     ];
   };
 
-  
+  home-manager = {
+  # also pass inputs to home-manager modules
+  extraSpecialArgs = {inherit inputs;};
+  users = {
+    "densetsu" = import ./home.nix;
+    };
+  };
 
   # for virtualization like gnome-boces or virt-manager
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
+  
+  #spices (virtualization)
+  services.spice-vdagentd.enable = true;  
+  
+  # for enabling Hyprland Window manager
+  programs.hyprland.enable = true;
 
   # zsh terminal
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
-
+  
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
   
   # Enable Flakes and the command-line tool with nix command settings 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -128,9 +167,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  # vim # Do not forget to add an editor to edit configuration.nix! The Nano editor   is also installed by default.
-  #
-  # bash and zsh 
+  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+   # bash and zsh 
     nix-bash-completions
     nix-zsh-completions
     zsh-autocomplete
@@ -146,6 +184,18 @@
     vim
     arandr
     pkgs.chromium
+    meson
+    gcc
+    clang
+    cl 
+    zig
+    cmake
+    meson
+    ninja
+    libsForQt5.full
+    libsForQt5.qt5.qtbase
+    qt6.full
+    qt6.qtbase
    #i3wm pkgs
     dmenu
     rofi
@@ -158,6 +208,8 @@
     jgmenu
     nix-zsh-completions
     zsh
+    tmux
+    fzf-zsh
     nitrogen
     pfetch
     neofetch
@@ -169,6 +221,7 @@
     sweet
     clipmenu
     volumeicon
+    brightnessctl
    # fonts and themes
     hermit
     source-code-pro
@@ -179,8 +232,15 @@
     i3status
     pcsctools
     ccid
+    pcsclite
     opensc
     starship
+    nixos-icons
+    material-icons
+    material-design-icons
+    luna-icons
+    variety
+    sweet
    #vim and programming 
     vimPlugins.nvim-treesitter-textsubjects
     nixos-install-tools
@@ -193,15 +253,73 @@
    #misc
     pasystray
     tlp
+    pkgs.ly
+    dhcpdump
+    lf
+    postgresql
+    w3m
+    usbimager
+   #hyprland
+    hyprland
+    xdg-desktop-portal-hyprland
+    rPackages.gbm
+    hyprland-protocols
+    libdrm
+    wayland-protocols
+    waybar
+    kitty
+    kitty-themes
+    swaybg
+   #waybar
+    gtkmm3
+    gtk-layer-shell
+    jsoncpp
+    fmt
+    wayland
+    spdlog
+    # libgtk-3-dev #[gtk-layer-shell]
+    gobject-introspection #[gtk-layer-shell]
+    # libpulse #[Pulseaudio module]
+    libnl #[Network module]
+    libappindicator-gtk3 #[Tray module]
+    libdbusmenu-gtk3 #[Tray module]
+    libmpdclient #[MPD module]
+    # libsndio #[sndio module# ]
+    libevdev #[KeyboardState module]
+    # xkbregistry
+    upower #[UPower battery module]
+    nwg-look
+    feh
+    wl-clipboard
+    wlogout 
   ];
 
-  # nix grub generations
+    fonts = {
+    fonts = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      font-awesome
+      source-han-sans
+      open-sans
+      source-han-sans-japanese
+      source-han-serif-japanese
+      openmoji-color
+    ];
+    fontconfig.defaultFonts = {
+      serif = [ "Noto Serif" "Source Han Serif" ];
+      sansSerif = [ "Open Sans" "Source Han Sans" ];
+      emoji = [ "openmoji-color" ];
+    };
+  };
+  
+   # nix grub generations
   nix.gc = {
   automatic = true;
   dates = "weekly";
-  options = "--delete-older-than 30d";
+  options = "--delete-older-than 15d";
   };
-
+  
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -210,10 +328,26 @@
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
-
+  # List services that you want to enable:     
+    services.sshd.enable = true;
+    services.tlp.enable = true;
+    services.pcscd.enable = true;
+    services.postgresql.enable = true;    
+  
   # Enable the OpenSSH daemon.
-   services.openssh.enable = true;
+    services.openssh.enable = true;
+
+  #services.openssh = {
+  #enable = true;
+  # require public key authentication for better security
+  #settings.PasswordAuthentication = false;
+  #settings.KbdInteractiveAuthentication = false;
+  #settings.PermitRootLogin = "yes";
+  #};
+  
+  #users.users."densetsu".openssh.authorizedKeys.keyFiles = [
+  # /etc/nixos/ssh/authorized_keys
+  # ];
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
