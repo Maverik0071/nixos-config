@@ -11,10 +11,6 @@
      
       hyprland.url = "github:hyprwm/Hyprland";
     };
- 
-    #plugin-onedark.url = "github:navarasu/onedark.nvim";
-    #plugin-onedark.flake = true;
-    # };
 
   outputs = { self, nixpkgs, hyprland, home-manager, ... }@inputs:
     let
@@ -29,13 +25,7 @@
           modules = [ 
             ./configuration.nix
             inputs.home-manager.nixosModules.default
-          ];
-    
-     #homeConfigurations."densetsu" =
-     #   inputs.home-manager.lib.homeManagerConfiguration {
-     #     inherit pkgs;
-     #     modules = [ ./nixos/home.nix ];
-     #     extraSpecialArgs = { inherit inputs; }; 
+          ]; 
           };
        };
      

@@ -36,7 +36,7 @@
   # };
   # }    
  
-  # Bootloader
+  # Bootloader #boot.kernalPackages = "pkgs.linuxPackages_latest;
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
@@ -150,14 +150,19 @@
   # for enabling Hyprland Window manager
   programs.hyprland.enable = true;
 
+  # LF file manager
+  # programs.lf.enable = true;
+
+  # ZRAM
+  zramSwap.enable = true;
+
   # zsh terminal
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
   
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  
+ 
   # Enable Flakes and the command-line tool with nix command settings 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -177,6 +182,7 @@
     zsh-syntax-highlighting
     zsh-history-substring-search
     zsh-fast-syntax-highlighting
+    nixd
   #bootstrapping
     wget
     curl
@@ -195,7 +201,11 @@
     libsForQt5.full
     libsForQt5.qt5.qtbase
     qt6.full
+    lm_sensors
+    xfce.xfce4-sensors-plugin
+    xsensors
     qt6.qtbase
+    fanctl
    #i3wm pkgs
     dmenu
     rofi
@@ -230,10 +240,12 @@
     terminus-nerdfont
     ranger
     i3status
-    pcsctools
-    ccid
-    pcsclite
-    opensc
+    pkgs.pcscliteWithPolkit
+    pkgs.pcsctools
+    pkgs.scmccid
+    pkgs.ccid
+    pkgs.pcsclite
+    pkgs.opensc
     starship
     nixos-icons
     material-icons
@@ -259,6 +271,8 @@
     postgresql
     w3m
     usbimager
+    wezterm
+    xdragon
    #hyprland
     hyprland
     xdg-desktop-portal-hyprland
@@ -267,6 +281,7 @@
     libdrm
     wayland-protocols
     waybar
+    wofi
     kitty
     kitty-themes
     swaybg
@@ -332,8 +347,8 @@
     services.sshd.enable = true;
     services.tlp.enable = true;
     services.pcscd.enable = true;
-    services.postgresql.enable = true;    
-  
+    services.postgresql.enable = true;
+ 
   # Enable the OpenSSH daemon.
     services.openssh.enable = true;
 
