@@ -7,8 +7,10 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix	
-      inputs.home-manager.nixosModules.default
+      ./hardware-configuration.nix
+      #./home
+      #./desktop-packages.nix	
+     inputs.home-manager.nixosModules.default
     ];
   
   nix = {
@@ -16,25 +18,12 @@
   extraOptions = lib.optionalString (config.nix.package == pkgs.nixFlakes)
     "experimental-features = nix-command flakes";
     }; 
-   
-
-  #programs.neovim = {
-  #  enable = true;
-   
-  #  viAlias = true;
-  #  vimAlias = true;
-  #  vimdiffAlias = true; 
   
-  # nixvim config
-  # {
-  #programs.nixvim = {
-  #  enable = true;
-  #  colorschemes.gruvbox.enable = true;
-  #  plugins.lightline.enable = true;
-  #    extraPlugins = with pkgs.vimPlugins; [
-  #    vim-nix
-  # };
-  # }    
+  #direnv
+  programs.direnv.enable = true;
+  programs.direnv.loadInNixShell = true;
+  programs.direnv.nix-direnv.enable = true;
+  programs.direnv.silent = true;    
  
   # Bootloader #boot.kernalPackages = "pkgs.linuxPackages_latest;
   boot.loader.grub.enable = true;
@@ -122,12 +111,13 @@
   users.users.densetsu = {
     isNormalUser = true;
     description = "densetsu";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "dialout"];
     packages = with pkgs; [
        vim
        neovim
        firefox
        chromium
+       openssh
     #  thunderbird
     ];
   };
@@ -167,11 +157,11 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Set default editor to vim
-  environment.variables.EDITOR = "neovim";
+  environment.variables.EDITOR = "lvim";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
+   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
    # bash and zsh 
     nix-bash-completions
@@ -186,6 +176,7 @@
   #bootstrapping
     wget
     curl
+    pkgs.gh
     git
     vim
     arandr
@@ -232,7 +223,7 @@
     clipmenu
     volumeicon
     brightnessctl
-   # fonts and themes
+  #  fonts and themes
     hermit
     source-code-pro
     terminus_font
@@ -273,6 +264,15 @@
     usbimager
     wezterm
     xdragon
+    lunarvim
+    pcsc-tools
+    pcsclite
+    pkgs.opensc
+    pkgs.ark
+    pam_p11
+    pam_usb
+    nss
+    nss_latest
    #hyprland
     hyprland
     xdg-desktop-portal-hyprland
@@ -307,7 +307,7 @@
     feh
     wl-clipboard
     wlogout 
-  ];
+   ];
 
     fonts = {
     fonts = with pkgs; [
@@ -332,8 +332,13 @@
   nix.gc = {
   automatic = true;
   dates = "weekly";
-  options = "--delete-older-than 15d";
+  options = "--delete-older-than 7d";
   };
+
+    nixpkgs.config.permittedInsecurePackages = [
+    "nodejs-12.22.12"
+    "python-2.7.18.7"
+  ];
   
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -347,28 +352,44 @@
     services.sshd.enable = true;
     services.tlp.enable = true;
     services.pcscd.enable = true;
+
+    security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
+          subject.isInGroup("wheel")) {
+          return polkit.Result.YES;
+        }
+      });
+  '';
+
     services.postgresql.enable = true;
  
   # Enable the OpenSSH daemon.
     services.openssh.enable = true;
-
-  #services.openssh = {
-  #enable = true;
+  	services.openssh.ports = [
+  	22
+  	];
+  # services.openssh = {
+  # enable = true;
   # require public key authentication for better security
   #settings.PasswordAuthentication = false;
   #settings.KbdInteractiveAuthentication = false;
   #settings.PermitRootLogin = "yes";
-  #};
-  
+  # }; 
+
+ 
   #users.users."densetsu".openssh.authorizedKeys.keyFiles = [
   # /etc/nixos/ssh/authorized_keys
   # ];
 
   # Open ports in the firewall.
+  networking.firewall.allowedTCPPorts = [ 22 80 443 ];
+  #networking.interfaces.enp1s0.useDHCP = true;
+  #networking.interfaces.wlp2s0.useDHCP = true;
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

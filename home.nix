@@ -12,6 +12,7 @@
     pkgs.xfce.xfce4-terminal
     pkgs.vim
     pkgs.neovim
+    pkgs.lunarvim
     pkgs.openssh
     pkgs.sshs
     pkgs.bash
