@@ -8,30 +8,34 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      #./home
-      #./desktop-packages.nix	
-     inputs.home-manager.nixosModules.default
     ];
-  
-  nix = {
-  package = pkgs.nixFlakes;
-  extraOptions = lib.optionalString (config.nix.package == pkgs.nixFlakes)
-    "experimental-features = nix-command flakes";
-    }; 
-  
+
+  # Bootloader.
+  #boot.loader.systemd-boot.enable = true;
+  #boot.loader.systemd-boot.extraEntries = { };
+  #boot.loader.efi.canTouchEfiVariables = true;
+  #boot.loader.efi.efiSysMountPoint = "/boot";
+  # boot.initrd.kernelModules = [" amdgpu "];
+  boot.loader = {
+  grub = {
+    enable = true;
+    useOSProber = true;
+    devices = [ "nodev" ];
+    efiSupport = true;
+    configurationLimit = 5;
+  };
+  efi.canTouchEfiVariables = true;
+};
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   #direnv
   programs.direnv.enable = true;
   programs.direnv.loadInNixShell = true;
   programs.direnv.nix-direnv.enable = true;
   programs.direnv.silent = true;    
- 
-  # Bootloader #boot.kernalPackages = "pkgs.linuxPackages_latest;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
 
-  networking.hostName = "blackwolf-nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "wolvesden"; # Define your hostname.
+  #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -66,23 +70,32 @@
   #services.xserver.desktopManager.xterm.enabe = false;
   #services.xserver.displayManager.lightdm.enable = true;
   services.xserver.windowManager.i3.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.displayManager.sddm.wayland.enable = true;
+  # services.xserver.displayManager.sddm.theme = "breeze";
   # services.xserver.displayManager.ly.enable = true;  
- 
+  # services.xserver.videoDrivers = [ "amdgpu" ];
+
+
   # Enable the XFCE Desktop Environment.
   # services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
   
+  # hyprland
+  programs.hyprland.enable = true;
+
+  # Configure keymap in X11
+  services.xserver = {
+    layout = "us";
+    xkbVariant = "";
+  };
+
   # enable flatpak
   services.flatpak.enable = true;
   xdg.portal.enable = true;
   
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk];
   xdg.portal.config.common.default = "gtk";
-  # Configure keymap in X11
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-  };
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -111,23 +124,11 @@
   users.users.densetsu = {
     isNormalUser = true;
     description = "densetsu";
-    extraGroups = [ "networkmanager" "wheel" "dialout"];
+    extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-       vim
-       neovim
-       firefox
-       chromium
-       openssh
+      firefox
     #  thunderbird
     ];
-  };
-
-  home-manager = {
-  # also pass inputs to home-manager modules
-  extraSpecialArgs = {inherit inputs;};
-  users = {
-    "densetsu" = import ./home.nix;
-    };
   };
 
   # for virtualization like gnome-boces or virt-manager
@@ -137,32 +138,33 @@
   #spices (virtualization)
   services.spice-vdagentd.enable = true;  
   
-  # for enabling Hyprland Window manager
-  programs.hyprland.enable = true;
-
   # LF file manager
   # programs.lf.enable = true;
 
   # ZRAM
   zramSwap.enable = true;
 
+  #nvidia
+
+
+
   # zsh terminal
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
-  
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
- 
-  # Enable Flakes and the command-line tool with nix command settings 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Set default editor to vim
+  # Enable Flakes and the command-line tool with nix command settings 
+  nix.settings.experimental-features = [ "nix-command"];
+  
+   # Set default editor to vim
   environment.variables.EDITOR = "lvim";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  environment.systemPackages = with pkgs; [
+     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
    # bash and zsh 
     nix-bash-completions
     nix-zsh-completions
@@ -223,7 +225,7 @@
     clipmenu
     volumeicon
     brightnessctl
-  #  fonts and themes
+  # fonts and themes
     hermit
     source-code-pro
     terminus_font
@@ -254,18 +256,20 @@
     rofi-power-menu
     blueberry
    #misc
+    gh
     pasystray
     tlp
     pkgs.ly
     dhcpdump
     lf
+    btop
     postgresql
     w3m
     usbimager
     wezterm
     xdragon
     lunarvim
-    pcsc-tools
+    pcsctools
     pcsclite
     pkgs.opensc
     pkgs.ark
@@ -273,8 +277,12 @@
     pam_usb
     nss
     nss_latest
+   # nvidia driver
+   # nvidia_x11
+   # nvidia-settings
+   # nvidia-persistenced
+   # lshw
    #hyprland
-    hyprland
     xdg-desktop-portal-hyprland
     rPackages.gbm
     hyprland-protocols
@@ -326,20 +334,27 @@
       sansSerif = [ "Open Sans" "Source Han Sans" ];
       emoji = [ "openmoji-color" ];
     };
-  };
-  
+  };    
+
+    programs.starship.enable = true;
+
+
    # nix grub generations
-  nix.gc = {
-  automatic = true;
-  dates = "weekly";
-  options = "--delete-older-than 7d";
+   system.autoUpgrade.enable = true;
+   system.autoUpgrade.operation = "boot";
+   system.autoUpgrade.dates = "24:00";
+   # nix.settings.auto-optimise-store = true;
+   nix.gc = {
+   automatic = true;
+   dates = "Sun 24:00";
+   options = "--delete-older-than 7d";
   };
 
     nixpkgs.config.permittedInsecurePackages = [
     "nodejs-12.22.12"
     "python-2.7.18.7"
   ];
-  
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -348,48 +363,23 @@
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:     
+  # List services that you want to enable:
     services.sshd.enable = true;
     services.tlp.enable = true;
     services.pcscd.enable = true;
 
-    security.polkit.extraConfig = ''
-      polkit.addRule(function(action, subject) {
-        if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
-          subject.isInGroup("wheel")) {
-          return polkit.Result.YES;
-        }
-      });
-  '';
-
-    services.postgresql.enable = true;
- 
   # Enable the OpenSSH daemon.
-    services.openssh.enable = true;
-  	services.openssh.ports = [
+  services.openssh.enable = true;
+  services.openssh.ports = [
   	22
-  	];
-  # services.openssh = {
-  # enable = true;
-  # require public key authentication for better security
-  #settings.PasswordAuthentication = false;
-  #settings.KbdInteractiveAuthentication = false;
-  #settings.PermitRootLogin = "yes";
-  # }; 
-
- 
-  #users.users."densetsu".openssh.authorizedKeys.keyFiles = [
-  # /etc/nixos/ssh/authorized_keys
-  # ];
+   ];
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 80 443 ];
-  #networking.interfaces.enp1s0.useDHCP = true;
-  #networking.interfaces.wlp2s0.useDHCP = true;
+   networking.firewall.allowedTCPPorts = [ 22 80 443 ];
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
