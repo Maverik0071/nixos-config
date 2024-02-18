@@ -338,7 +338,6 @@
 
     programs.starship.enable = true;
 
-
    # nix grub generations
    system.autoUpgrade.enable = true;
    system.autoUpgrade.operation = "boot";
