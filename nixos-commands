@@ -1,0 +1,43 @@
+# nixos commands
+
+# search for packages
+
+nix search nixpkg <whatever package>
+
+# rebuild system (base without flakes)
+
+sudo nixos-rebuild switch
+
+# rebuild system (base with flakes)
+
+sudo nixos-rebuild switch --flake /etc/nixos/#default
+
+# repl:
+  
+nix repl -f flake:nixpkgs
+
+# starting the development environment
+
+nix-shell -p direnv
+
+nix-shell -i direnv
+
+# delete older packages from the nix profile which links them
+
+nix-collect-garbage -d
+sudo nix-collect-garbage --delete-old
+
+# remove grub entries
+
+nix-env --delete-generations old --profile /nix/var/nix/profiles/system
+
+nix-store --gc
+
+# history
+
+nix profile history --profile /nix/var/nix/profiles/system
+
+# clean:
+# remove all generations older than 7 days
+sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
+
