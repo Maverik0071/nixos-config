@@ -117,7 +117,7 @@
        vim
        neovim
        firefox
-       chromium
+       ungoogled-chromium
        openssh
        lunarvim
        pkgs.gh 
@@ -167,7 +167,7 @@
   # $ nix search wget
    environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-   # bash and zsh 
+   # bash & zsh & nix 
     nix-bash-completions
     nix-zsh-completions
     zsh-autocomplete
@@ -176,8 +176,13 @@
     zsh-syntax-highlighting
     zsh-history-substring-search
     zsh-fast-syntax-highlighting
+    nix-bundle
+    nixos-generators
+    buildkit-nix
+    nix-build-uncached
     nixd
-  #bootstrapping
+
+  # bootstrapping
     wget
     curl
     pkgs.gh
@@ -201,7 +206,9 @@
     xsensors
     qt6.qtbase
     fanctl
-   #i3wm pkgs
+    pasystray
+
+   # i3wm packages
     dmenu
     rofi
     autotiling
@@ -227,7 +234,8 @@
     clipmenu
     volumeicon
     brightnessctl
-  #  fonts and themes
+
+  # fonts and themes
     hermit
     powerline-fonts
     noto-fonts
@@ -253,7 +261,8 @@
     luna-icons
     variety
     sweet
-   #vim and programming 
+
+   # vim and programming 
     vimPlugins.nvim-treesitter-textsubjects
     nixos-install-tools
     nodejs_21
@@ -262,7 +271,8 @@
     clipit
     rofi-power-menu
     blueberry
-   #misc
+
+   # misc
     pasystray
     tlp
     pkgs.ly
@@ -284,7 +294,13 @@
     nss_latest
     acsccid
     distrobox
-   #hyprland
+    pamixer
+    teams-for-linux
+    ungoogled-chromium
+    thrust
+    brave
+
+   # hyprland
     hyprland
     xdg-desktop-portal-hyprland
     rPackages.gbm
@@ -296,7 +312,8 @@
     kitty
     kitty-themes
     swaybg
-   #waybar
+    
+   # waybar
     gtkmm3
     gtk-layer-shell
     jsoncpp
@@ -318,8 +335,8 @@
     feh
     wl-clipboard
     wlogout 
-
-   # pentesting
+   
+    # pentesting
     pkgs.nmap
     pkgs.wireshark
     pkgs.masscan
