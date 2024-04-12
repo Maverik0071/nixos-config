@@ -318,7 +318,44 @@
     feh
     wl-clipboard
     wlogout 
-   ];
+
+   # pentesting
+    pkgs.nmap
+    pkgs.wireshark
+    pkgs.masscan
+    pkgs.arp-scan
+    pkgs.aircrack-ng
+    pkgs.bully
+    pkgs.lynis
+    pkgs.brutespray
+    pkgs.metasploit
+    pkgs.sniffglue
+    pkgs.dnschef
+    pkgs.dsniff
+    pkgs.capstone
+    pkgs.metasploit
+    pkgs.tor
+    pkgs.tor-browser
+    pkgs.xfce.xfce4-terminal
+    pkgs.mtr
+    pkgs.netmask
+    pkgs.whois
+    pkgs.josh
+    pkgs.hashcat
+    pkgs.badtouch
+    pkgs.ipscan
+    pkgs.ntp
+    pkgs.samba
+    pkgs.unicorn
+    pkgs.cardpeek
+    pkgs.tmux
+    pkgs.junkie
+    pkgs.wireshark-cli
+    pkgs.zeek
+    pkgs.direnv
+    pkgs.snmpcheck
+   
+  ];
 
     fonts = {
     fonts = with pkgs; [
