@@ -13,11 +13,11 @@
      inputs.home-manager.nixosModules.default
     ];
   
-  nix = {
-  package = pkgs.nixFlakes;
-  extraOptions = lib.optionalString (config.nix.package == pkgs.nixFlakes)
-    "experimental-features = nix-command flakes";
-    }; 
+  #nix = {
+  #package = pkgs.nixFlakes;
+  #extraOptions = lib.optionalString (config.nix.package == pkgs.nixFlakes)
+  #  "experimental-features = nix-command flakes";
+  #  }; 
   
   #direnv
   programs.direnv.enable = true;
@@ -65,9 +65,7 @@
   #services.xserver.layout = "us";
   #services.xserver.desktopManager.default = "none";
   #services.xserver.desktopManager.xterm.enabe = false;
-  #services.xserver.displayManager.lightdm.enable = true;
   services.xserver.windowManager.i3.enable = true;
-  # services.xserver.displayManager.ly.enable = true;  
  
   # Enable the XFCE Desktop Environment.
   # services.xserver.displayManager.lightdm.enable = true;
@@ -337,40 +335,40 @@
     wlogout 
    
     # pentesting
-    pkgs.nmap
-    pkgs.wireshark
-    pkgs.masscan
-    pkgs.arp-scan
-    pkgs.aircrack-ng
-    pkgs.bully
-    pkgs.lynis
-    pkgs.brutespray
-    pkgs.metasploit
-    pkgs.sniffglue
-    pkgs.dnschef
-    pkgs.dsniff
-    pkgs.capstone
-    pkgs.metasploit
-    pkgs.tor
-    pkgs.tor-browser
-    pkgs.xfce.xfce4-terminal
-    pkgs.mtr
-    pkgs.netmask
-    pkgs.whois
-    pkgs.josh
-    pkgs.hashcat
-    pkgs.badtouch
-    pkgs.ipscan
-    pkgs.ntp
-    pkgs.samba
-    pkgs.unicorn
-    pkgs.cardpeek
-    pkgs.tmux
-    pkgs.junkie
-    pkgs.wireshark-cli
-    pkgs.zeek
-    pkgs.direnv
-    pkgs.snmpcheck
+    #pkgs.nmap
+    #pkgs.wireshark
+    #pkgs.masscan
+    #pkgs.arp-scan
+    #pkgs.aircrack-ng
+    #pkgs.bully
+    #pkgs.lynis
+    #pkgs.brutespray
+    #pkgs.metasploit
+    #pkgs.sniffglue
+    #pkgs.dnschef
+    #pkgs.dsniff
+    #pkgs.capstone
+    #pkgs.metasploit
+    #pkgs.tor
+    #pkgs.tor-browser
+    #pkgs.xfce.xfce4-terminal
+    #pkgs.mtr
+    #pkgs.netmask
+    #pkgs.whois
+    #pkgs.josh
+    #pkgs.hashcat
+    #pkgs.badtouch
+    #pkgs.ipscan
+    #pkgs.ntp
+    #pkgs.samba
+    #pkgs.unicorn
+    #pkgs.cardpeek
+    #pkgs.tmux
+    #pkgs.junkie
+    #pkgs.wireshark-cli
+    #pkgs.zeek
+    #pkgs.direnv
+    #pkgs.snmpcheck
    
   ];
 
