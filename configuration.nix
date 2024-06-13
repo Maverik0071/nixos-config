@@ -10,25 +10,28 @@
        ./hardware-configuration.nix
       # ./home
      # ./desktop-packages.nix	
-     inputs.home-manager.nixosModules.default
+    inputs.home-manager.nixosModules.default
     ];
   
-  #nix = {
-  #package = pkgs.nixFlakes;
-  #extraOptions = lib.optionalString (config.nix.package == pkgs.nixFlakes)
-  #  "experimental-features = nix-command flakes";
-  #  }; 
-  
+  nix = {
+  package = pkgs.nixFlakes;
+  extraOptions = lib.optionalString (config.nix.package == pkgs.nixFlakes)
+    "experimental-features = nix-command flakes";
+      };
+
   #direnv
   programs.direnv.enable = true;
   programs.direnv.loadInNixShell = true;
   programs.direnv.nix-direnv.enable = true;
   programs.direnv.silent = true;    
  
-  # Bootloader #boot.kernalPackages = "pkgs.linuxPackages_latest;
+  # Bootloader 
+ # boot.kernalPackages = "pkgs.linuxPackages_latest;
+  #boot.loader.grub.enable = true;
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.devices = [ "/dev/sda/" ];
   boot.loader.grub.useOSProber = true;
+  boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub.configurationLimit = 10;
 
   networking.hostName = "blackwolf-nixos"; # Define your hostname.
@@ -65,7 +68,8 @@
   #services.xserver.layout = "us";
   #services.xserver.desktopManager.default = "none";
   #services.xserver.desktopManager.xterm.enabe = false;
-  services.xserver.windowManager.i3.enable = true;
+  #services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.windowManager.i3.enable = true;  
  
   # Enable the XFCE Desktop Environment.
   # services.xserver.displayManager.lightdm.enable = true;
@@ -74,9 +78,19 @@
   # enable flatpak
   services.flatpak.enable = true;
   xdg.portal.enable = true;
-  
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk];
+ 
+  # xdg-portals
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-hyprland];
   xdg.portal.config.common.default = "gtk";
+
+  # nh -nixos cli-helper
+  # programs.nh = {
+  # enable = true;
+    # clean.enable = true;
+    # clean.extraArgs = "--keep-since 4d --keep 3";
+    # flake = "/etc/nixos/flake.nix";
+  # };
+
   # Configure keymap in X11
   services.xserver = {
     layout = "us";
@@ -110,10 +124,11 @@
   users.users.densetsu = {
     isNormalUser = true;
     description = "densetsu";
-    extraGroups = [ "networkmanager" "wheel" "dialout"];
+    extraGroups = [ "networkmanager" "wheel" "dialout" "inputs"];
     packages = with pkgs; [
        vim
        neovim
+       nixos-install-tools
        firefox
        ungoogled-chromium
        openssh
@@ -123,13 +138,13 @@
     ];
   };
 
-  home-manager = {
+  #home-manager = {
   # also pass inputs to home-manager modules
-  extraSpecialArgs = {inherit inputs;};
-  users = {
-    "densetsu" = import ./home.nix;
-    };
-  };
+  #extraSpecialArgs = {inherit inputs;};
+  #users = {
+  #  "densetsu" = import ./home.nix;
+  #  };
+  #};
 
   # for virtualization like gnome-boces or virt-manager
   virtualisation.libvirtd.enable = true;
@@ -156,16 +171,16 @@
   nixpkgs.config.allowUnfree = true;
  
   # Enable Flakes and the command-line tool with nix command settings 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [ "nix-command flakes" ];
 
   # Set default editor to vim
-  environment.variables.EDITOR = "lvim";
+  environment.variables.EDITOR = "lunarvim";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
    environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-   # bash & zsh & nix 
+   # bash and zsh 
     nix-bash-completions
     nix-zsh-completions
     zsh-autocomplete
@@ -179,8 +194,11 @@
     buildkit-nix
     nix-build-uncached
     nixd
+    nh
+    nvd
+    nix-output-monitor
 
-  # bootstrapping
+  #bootstrapping
     wget
     curl
     pkgs.gh
@@ -203,10 +221,11 @@
     xfce.xfce4-sensors-plugin
     xsensors
     qt6.qtbase
+    rustc
+    rustup
     fanctl
-    pasystray
 
-   # i3wm packages
+   #i3wm pkgs
     dmenu
     rofi
     autotiling
@@ -224,6 +243,7 @@
     pfetch
     neofetch
     neovim
+    nitch
     picom
     networkmanager_dmenu
     papirus-folders
@@ -233,7 +253,7 @@
     volumeicon
     brightnessctl
 
-  # fonts and themes
+  #fonts and themes
     hermit
     powerline-fonts
     noto-fonts
@@ -260,17 +280,17 @@
     variety
     sweet
 
-   # vim and programming 
+   #vim and programming 
     vimPlugins.nvim-treesitter-textsubjects
     nixos-install-tools
-    nodejs_21
+    nodejs_22
     lua
     python3
     clipit
     rofi-power-menu
     blueberry
 
-   # misc
+   #misc
     pasystray
     tlp
     pkgs.ly
@@ -287,7 +307,7 @@
     pkgs.opensc
     pkgs.ark
     pam_p11
-    pam_usb
+    # pam_usb
     nss
     nss_latest
     acsccid
@@ -298,7 +318,7 @@
     thrust
     brave
 
-   # hyprland
+   #hyprland
     hyprland
     xdg-desktop-portal-hyprland
     rPackages.gbm
@@ -310,8 +330,7 @@
     kitty
     kitty-themes
     swaybg
-    
-   # waybar
+   #waybar
     gtkmm3
     gtk-layer-shell
     jsoncpp
@@ -333,44 +352,11 @@
     feh
     wl-clipboard
     wlogout 
-   
-    # pentesting
-    #pkgs.nmap
-    #pkgs.wireshark
-    #pkgs.masscan
-    #pkgs.arp-scan
-    #pkgs.aircrack-ng
-    #pkgs.bully
-    #pkgs.lynis
-    #pkgs.brutespray
-    #pkgs.metasploit
-    #pkgs.sniffglue
-    #pkgs.dnschef
-    #pkgs.dsniff
-    #pkgs.capstone
-    #pkgs.metasploit
-    #pkgs.tor
-    #pkgs.tor-browser
-    #pkgs.xfce.xfce4-terminal
-    #pkgs.mtr
-    #pkgs.netmask
-    #pkgs.whois
-    #pkgs.josh
-    #pkgs.hashcat
-    #pkgs.badtouch
-    #pkgs.ipscan
-    #pkgs.ntp
-    #pkgs.samba
-    #pkgs.unicorn
-    #pkgs.cardpeek
-    #pkgs.tmux
-    #pkgs.junkie
-    #pkgs.wireshark-cli
-    #pkgs.zeek
-    #pkgs.direnv
-    #pkgs.snmpcheck
-   
-  ];
+   ];
+
+   environment.sessionVariables = {
+   FLAKE = "/etc/nixos/flake.nix";
+   };
 
     fonts = {
     fonts = with pkgs; [
@@ -391,16 +377,18 @@
     };
   };
   
-   # nix grub generations
+  # nix grub generations
+  nix.settings.auto-optimise-store = true;
   nix.gc = {
   automatic = true;
   dates = "weekly";
-  options = "--delete-older-than 7d";
+  options = "--delete-older-than 5d";
   };
 
     nixpkgs.config.permittedInsecurePackages = [
     "nodejs-12.22.12"
     "python-2.7.18.7"
+    "nix-2.16.2"
   ];
   
   # Some programs need SUID wrappers, can be configured further or are
@@ -415,6 +403,8 @@
     services.sshd.enable = true;
     services.tlp.enable = true;
     services.pcscd.enable = true;
+    services.xserver.xkb.variant = "";
+    services.xserver.xkb.layout = "us";
 
     security.polkit.extraConfig = ''
       polkit.addRule(function(action, subject) {
