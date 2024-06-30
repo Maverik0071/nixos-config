@@ -1,5 +1,5 @@
 {
-  description = "Denetsu config flake";
+  description = "Densetsu config flake";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";    
@@ -10,9 +10,11 @@
      };
      
       hyprland.url = "github:hyprwm/Hyprland";
-    };
+     };
 
-  outputs = { self, nixpkgs, hyprland, home-manager, ... }@inputs:
+      nixos-gnome.url = "github:Maverik0071/nixos-gnome";
+
+  outputs = { self, nixpkgs, hyprland, home-manager, nixos-gnome, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system}; 
@@ -20,13 +22,16 @@
      {
     
      # nix flakes basic config
-     nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+     nixosConfigurations = {
+      blackwolf-nixos = nixpkgs.lib.nixosSystem {
           specialArgs = {inherit inputs;};
           modules = [ 
-           ./configuration.nix
-           inputs.home-manager.nixosModules.default
+          ./configuration.nix
+          inputs.home-manager.nixosModules.default
           ]; 
-          };
+        };
        };
      
+     };
+
      }
