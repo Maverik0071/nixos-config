@@ -194,6 +194,25 @@
     buildkit-nix
     nix-build-uncached
     nixd
+    nix-top
+    nix-doc
+    nix-pin
+    nix-tree
+    nix-melt
+    nix-info
+    nix-diff
+    nix-serve
+    nix-index
+    nix-update
+    nix-script
+    nix-bundle
+    nixos-icons
+    nixos-shell
+    nix-plugins
+    nix-search-cli
+    nixpkgs-lint
+    nixos-option
+    nom
     nh
     nvd
     nix-output-monitor
@@ -224,6 +243,8 @@
     rustc
     rustup
     fanctl
+    curlpp
+    libgnurl
 
    #i3wm pkgs
     dmenu
@@ -239,6 +260,9 @@
     zsh
     tmux
     fzf-zsh
+    fzf
+    zoxide
+    feh
     nitrogen
     pfetch
     neofetch
@@ -302,9 +326,6 @@
     wezterm
     xdragon
     lunarvim
-    pcsc-tools
-    pcsclite
-    pkgs.opensc
     pkgs.ark
     pam_p11
     # pam_usb
@@ -317,6 +338,7 @@
     ungoogled-chromium
     thrust
     brave
+    microsoft-edge-dev
 
    #hyprland
     hyprland
@@ -364,6 +386,7 @@
       noto-fonts-cjk
       noto-fonts-emoji
       font-awesome
+      jetbrains-mono
       source-han-sans
       open-sans
       source-han-sans-japanese
@@ -405,8 +428,8 @@
     services.pcscd.enable = true;
     services.xserver.xkb.variant = "";
     services.xserver.xkb.layout = "us";
-
-    security.polkit.extraConfig = ''
+    
+    security.polkit.extraConfig =''
       polkit.addRule(function(action, subject) {
         if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
           subject.isInGroup("wheel")) {
@@ -451,6 +474,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 
 }
