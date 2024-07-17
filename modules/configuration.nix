@@ -180,7 +180,8 @@
   # $ nix search wget
    environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-   # bash and zsh 
+   
+  # bash and zsh 
     nix-bash-completions
     nix-zsh-completions
     zsh-autocomplete
@@ -208,7 +209,7 @@
     nix-bundle
     nixos-icons
     nixos-shell
-    nix-pluginszx
+    nix-plugins
     nix-search-cli
     nixpkgs-lint
     nixos-option
@@ -317,7 +318,6 @@
    #misc
     pasystray
     tlp
-    pkgs.ly
     dhcpdump
     lf
     postgresql
@@ -389,6 +389,10 @@
       jetbrains-mono
       source-han-sans
       open-sans
+      terminus-nerdfont
+      terminus_font
+      terminus_font_ttf
+      hackgen-nf-font
       source-han-sans-japanese
       source-han-serif-japanese
       openmoji-color
