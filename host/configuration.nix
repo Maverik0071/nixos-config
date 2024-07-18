@@ -339,6 +339,7 @@
     thrust
     brave
     microsoft-edge-dev
+    zed-editor
 
    #hyprland
     hyprland
