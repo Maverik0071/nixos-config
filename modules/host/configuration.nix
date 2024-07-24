@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, modulesPath, lib, inputs, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   imports =
@@ -101,7 +101,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  sound.enable = true;
+  # sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -156,7 +156,7 @@
   
   # for enabling Hyprland Window manager
   programs.hyprland.enable = true;
-
+   
   # LF file manager
   # programs.lf.enable = true;
 
@@ -215,6 +215,7 @@
     nixos-option
     nom
     nh
+    nil
     nvd
     nix-output-monitor
 
@@ -294,9 +295,13 @@
     pkgs.pcscliteWithPolkit
     pkgs.pcsctools
     pkgs.scmccid
-    pkgs.ccid
+    # CHANGED TO OLDER VERSION
+    inputs.nixpkgs-another-version.legacyPackages.${pkgs.system}.ccid
+    # ccid
     pkgs.pcsclite
-    pkgs.opensc
+    # CHANGED TO OLDER VERSION
+    inputs.nixpkgs-another-version.legacyPackages.${pkgs.system}.opensc
+    # opensc
     starship
     nixos-icons
     material-icons
