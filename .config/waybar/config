@@ -12,6 +12,6 @@
   "margin-right": 0,
 
   "modules-left": ["clock", "cpu", "memory", "disk", "battery"],
-  "modules-center": ["wlr/workspaces"],
+  "modules-center": ["hyprland/workspaces"],
   "modules-right": ["custom/cycle_wall", "network", "pulseaudio", "tray", "custom/power"],
 }

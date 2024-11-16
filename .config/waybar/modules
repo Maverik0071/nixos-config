@@ -14,7 +14,7 @@
       "smooth-scrolling-threshold": 1,
     },
 
-	"wlr/workspaces-cn": {
+	"hyprland/workspaces": {
     "format": "{icon}",
     "on-click": "activate",
     "all-outputs": true,
