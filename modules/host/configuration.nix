@@ -2,14 +2,18 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, modulesPath, lib, inputs, flakes, home-manager, nixos-cosmic, ... }:
+{ config, pkgs, modulesPath, lib, inputs, home-manager, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       #nixos-cosmic.nixosModules.default
+      inputs.home-manager.nixosModules.default
     ];
+   
+   # XWayland
+   programs.xwayland.enable = true;
 
   # amdgpu setup
   # Enable OpenGL
@@ -28,7 +32,7 @@
   ];
    
   # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["amdgpu"];
+  services.xserver.videoDrivers = ["amdgpu radeon"];
   
   hardware.nvidia = {
 
@@ -60,8 +64,8 @@
 
   # Bootloader
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+  boot.loader.grub.device = "nodev";
+  # boot.loader.grub.useOSProber = true;
  
 
   boot.initrd.kernelModules = [ "amdgpu"];
@@ -103,13 +107,6 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  #services.xserver.autorun = true;
-  #services.xserver.layout = "us";
-  #services.xserver.displayManager.lightdm.enable = true;
-  #services.xserver.windowManager.i3.enable = true;
-  #services.xserver.displayManager.sddm.enable = true;
-  #services.xserver.displayManager.sddm.wayland.enable = true;
-  # services.xserver.displayManager.sddm.theme = "breeze";
 
   # gnome desktop
   programs.dconf.enable = true;
@@ -128,9 +125,9 @@
 
   # enable flatpak
   services.flatpak.enable = true;
-  # xdg.portal.enable = true;
   
-
+  # xdg portals
+  xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-cosmic pkgs.xdg-desktop-portal-hyprland ];
   xdg.portal.config.common.default = "cosmic";
 
@@ -247,6 +244,21 @@
     nh
     nil
 
+    zsh-z
+    zsh-bd
+    zsh-abbr
+    zsh-defer
+    zsh-zhooks
+    zsh-prezto
+    zsh-forgit
+    zsh-f-sy-h
+    zsh-nix-shell
+    zsh-clipboard
+    zsh-completions
+    zsh-git-prompt
+    zsh-powerlevel10k
+    zsh-autocomplete
+
     # system pacakages
     gzip
     wget
@@ -274,7 +286,7 @@
     fastfetch
     lsd
     zsh
-    nitrogen
+    #nitrogen
     pfetch
     neofetch
     gh
@@ -290,6 +302,8 @@
     lshw
     rPackages.gbm
     gtk-layer-shell
+    clipit
+    nitrogen
     
    # hyprland packages
     yazi
@@ -314,7 +328,6 @@
     papirus-nord
     sweet
     clipmenu
-    volumeicon
     brightnessctl
     nwg-look
     feh
@@ -335,6 +348,8 @@
     kitty
     kitty-themes
     swaybg
+    gnumake
+    gnumake42
 
    # smartcard applications
     pam_p11
@@ -357,8 +372,9 @@
     lua
     python3
     
-   # cosmic applications
+    # cosmic applications
     cosmic-bg
+    cosmic-osd
     cosmic-term
     cosmic-edit
     cosmic-comp
@@ -369,13 +385,22 @@
     cosmic-files
     cosmic-applets
     cosmic-settings
+    # cosmic-protocols
+    cosmic-session
+    cosmic-applets
+    cosmic-screenshot
     cosmic-launcher
+    cosmic-wallpapers
     cosmic-screenshot
     cosmic-applibrary
     cosmic-design-demo
     cosmic-notifications
     cosmic-settings-daemon
     cosmic-workspaces-epoch
+    flam3
+    qosmic
+
+    xdg-desktop-portal-cosmic
 
    # gaming
     steam
@@ -407,7 +432,19 @@
     libevdev #[KeyboardState module]
     # xkbregistry
     upower #[UPower battery module]
-    
+
+    # asus kernel and sensors
+    linuxKernel.packages.linux_zen.zenpower
+    linuxKernel.packages.linux_zen.asus-ec-sensors
+    linuxKernel.packages.linux_zen.asus-wmi-sensors
+    linuxKernel.packages.linux_xanmod.asus-ec-sensors
+    # linuxKernel.pacakges.linux_xanmod_latest.asus-ec-sensors
+    linuxKernel.packages.linux_xanmod_stable.asus-ec-sensors
+    linuxKernel.packages.linux_xanmod_latest.asus-wmi-sensors
+
+    # applications
+    virt-manager
+    sublime4
    ];
    
    # fonts, folders, themes, icons
@@ -430,7 +467,16 @@
       material-icons
       material-design-icons
       sweet-folders
+      powerline-fonts
+      corefonts
+      google-fonts
+      jetbrains-mono
+      jetbrains-toolbox
+      udev-gothic
+      hack-font
+    
     ];
+
     fontconfig.defaultFonts = {
       serif = [ "Noto Serif" "Source Han Serif" ];
       sansSerif = [ "Open Sans" "Source Han Sans" ];
@@ -438,11 +484,15 @@
     };
   };    
 
+    # startship prompt
     programs.starship.enable = true;
 
     environment.sessionVariables = {
      FLAKE = "/etc/nixos/";
         };
+
+    # cosmic-comp
+    environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
 
   # Hyperland window manager
    programs.hyprland.enable = true;
@@ -462,8 +512,10 @@
     "nodejs-12.22.12"
     "python-2.7.18.7"
     "nix-2.17.1"
+    "openssl-1.1.1w"
   ];
-    
+
+  
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -473,11 +525,58 @@
   #   enableSSHSupport = true;
   # };
 
+  # Asus List services that you want to enable:
+  services.supergfxd.enable = true;
+  services = {
+    asusd = {
+      enable = true;
+      enableUserService = true;
+    };
+  };
+  services.supergfxd.settings = {
+  supergfxctl-mode = "Integrated";
+  gfx-vfio-enable = true;
+  };  # Power Profiles
+  systemd.services.supergfxd.path = [ pkgs.pciutils ];
+  services.power-profiles-daemon.enable = true;
+
+
   # List services that you want to enable:
     services.sshd.enable = true;
   # services.tlp.enable = true;
     services.pcscd.enable = true;
     security.pam.p11.enable = true;
+    services.teamviewer.enable = true;
+    services.postgresql.enable = true;
+    services.tailscale.enable = true;
+
+    # services.asusd.enableUserService = true;
+    # services.asusd.enable = true;
+
+  # list of programs with services
+    programs.rog-control-center.enable = true;
+    programs.rog-control-center.autoStart = false;
+    services.smartd.enable = true;
+    programs.zsh.enableLsColors = true;
+    programs.zsh.enableCompletion = true;
+    programs.zsh.enableBashCompletion = true;
+    programs.zsh.autosuggestions.strategy = [
+     "history"
+      ];
+
+    programs.zsh.autosuggestions.async = true;
+    virtualisation.kvmgt.enable = true;
+ 
+
+    security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
+          subject.isInGroup("wheel")) {
+          return polkit.Result.YES;
+        }
+      });
+  '';  
+             
     
   # cosmic-desktop services
   # List services that you want to enable:
@@ -503,6 +602,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 
 }
