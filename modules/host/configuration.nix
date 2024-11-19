@@ -182,6 +182,12 @@
   #spices (virtualization)
   services.spice-vdagentd.enable = true;  
   
+<<<<<<< HEAD
+=======
+  # for enabling Hyprland Window manager
+  programs.hyprland.enable = true; 
+
+>>>>>>> 132b60d (updating nixos-config)
   # LF file manager
   # programs.lf.enable = true;
 

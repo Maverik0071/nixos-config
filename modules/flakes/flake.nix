@@ -42,9 +42,17 @@
           }
           nixos-cosmic.nixosModules.default
           inputs.home-manager.nixosModules.default
+<<<<<<< HEAD
           ./configuration.nix
         ];
       };
     };
   };
+=======
+           
+        ]; 
+      };
+    };
+  }; 
+>>>>>>> 132b60d (updating nixos-config)
 }
