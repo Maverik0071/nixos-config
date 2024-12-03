@@ -8,42 +8,42 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      #nixos-cosmic.nixosModules.default
+      # nixos-cosmic.nixosModules.default
       inputs.home-manager.nixosModules.default
     ];
    
    # XWayland
    programs.xwayland.enable = true;
 
-  # amdgpu setup
-  # Enable OpenGL
-  hardware.opengl = {
-    enable = true;
-   # driSupport = true;
-   # driSupport32Bit = true;
-  };
+############ amdgpu setup #############
+#   Enable OpenGL
+#  hardware.opengl = {
+#    enable = true;
+#    driSupport = true;
+#    driSupport32Bit = true;
+#  };
 
-  hardware.opengl.extraPackages = with pkgs; [
-  amdvlk
-  ];
-  # For 32 bit applications 
-  hardware.opengl.extraPackages32 = with pkgs; [
-  driversi686Linux.amdvlk
-  ];
-   
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["amdgpu radeon"];
-  
-  hardware.nvidia = {
-
-    # Modesetting is required.
-    modesetting.enable = true;
-
+#  hardware.opengl.extraPackages = with pkgs; [
+#  amdvlk
+#  ];
+# For 32 bit applications 
+#  hardware.opengl.extraPackages32 = with pkgs; [
+#  driversi686Linux.amdvlk
+#  ];
+#   
+#  # Load nvidia driver for Xorg and Wayland
+#  services.xserver.videoDrivers = ["amdgpu radeon"];
+#  
+#  hardware.nvidia = {
+#
+#    # Modesetting is required.
+#    modesetting.enable = true;
+#
     # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-    powerManagement.enable = false;
-    # Fine-grained power management. Turns off GPU when not in use.
-    # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-    powerManagement.finegrained = false;
+#    powerManagement.enable = false;
+ #   # Fine-grained power management. Turns off GPU when not in use.
+ #   # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+ #   powerManagement.finegrained = false;
 
     # Use the NVidia open source kernel module (not to be confused with the
     # independent third-party "nouveau" open source driver).
@@ -52,23 +52,25 @@
     # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
     # Only available from driver 515.43.04+
     # Currently alpha-quality/buggy, so false is currently the recommended setting.
-    open = false;
+#    open = false;
 
     # Enable the Nvidia settings menu,
 	# accessible via `nvidia-settings`.
-    nvidiaSettings = true;
+#    nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
+#    package = config.boot.kernelPackages.nvidiaPackages.stable;
+#  };
 
   # Bootloader
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "nodev";
-  # boot.loader.grub.useOSProber = true;
+  boot.loader.grub.fontSize = "20";
+  boot.loader.grub.configurationLimit = 7;
+  boot.loader.grub.useOSProber = false;
  
 
-  boot.initrd.kernelModules = [ "amdgpu"];
+  boot.initrd.kernelModules = [ "amdgpu radeon"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   #direnv
@@ -298,6 +300,8 @@
     gtk-layer-shell
     clipit
     nitrogen
+    gvfs
+    topgrade
     
    # hyprland packages
     yazi
@@ -383,8 +387,8 @@
     cosmic-session
     cosmic-applets
     cosmic-screenshot
+    pkgs.cosmic-wallpapers
     cosmic-launcher
-    cosmic-wallpapers
     cosmic-screenshot
     cosmic-applibrary
     cosmic-design-demo
@@ -489,7 +493,7 @@
     environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
 
   # Hyperland window manager
-   programs.hyprland.enable = true;
+  programs.hyprland.enable = true;
 
    # nix grub generations
    system.autoUpgrade.enable = true;
@@ -537,7 +541,6 @@
 
   # List services that you want to enable:
     services.sshd.enable = true;
-  # services.tlp.enable = true;
     services.pcscd.enable = true;
     security.pam.p11.enable = true;
     services.teamviewer.enable = true;
@@ -580,7 +583,7 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.ports = [
-  	22
+  	22 80
    ];
 
   # Open ports in the firewall.
