@@ -41,3 +41,7 @@ nix profile history --profile /nix/var/nix/profiles/system
 # remove all generations older than 7 days
 sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
 
+# nix os
+1. cd into the flake file -- command:  cd-flake
+2. edit the iso file -- sudo vim iso.nix
+3. run this command:  sudo / nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage -I nixos-config=iso.nix
