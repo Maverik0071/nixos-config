@@ -1,5 +1,9 @@
 # nixos commands
 
+# nixos unstable channels
+sudo nix-channel --add https://nixos.org/channels/nixos-unstable
+sudo nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+
 # search for packages
 
 nix search nixpkg <whatever package>

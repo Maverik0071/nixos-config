@@ -8,13 +8,14 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      # nixos-cosmic.nixosModules.default
-       #./nixos-hardware/lenovo/thinkpad/t480s
-      inputs.home-manager.nixosModules.default
+     # inputs.nixos-cosmic.nixosModules.default
+     inputs.home-manager.nixosModules.default
     ];
    
-   # XWayland
-   programs.xwayland.enable = true;
+  # XWayland
+  programs.xwayland = {
+  enable = false;
+  };
 
 ############ amdgpu setup #############
 #   Enable OpenGL
@@ -27,11 +28,11 @@
 #  hardware.opengl.extraPackages = with pkgs; [
 #  amdvlk
 #  ];
-# For 32 bit applications 
+# For 32 bit applications
 #  hardware.opengl.extraPackages32 = with pkgs; [
 #  driversi686Linux.amdvlk
 #  ];
-#   
+#  
 #  # Load nvidia driver for Xorg and Wayland
 #  services.xserver.videoDrivers = ["amdgpu radeon"];
 #  
@@ -48,15 +49,15 @@
 
     # Use the NVidia open source kernel module (not to be confused with the
     # independent third-party "nouveau" open source driver).
-    # Support is limited to the Turing and later architectures. Full list of 
-    # supported GPUs is at: 
-    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
+    # Support is limited to the Turing and later architectures. Full list of
+    # supported GPUs is at:
+    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
     # Only available from driver 515.43.04+
     # Currently alpha-quality/buggy, so false is currently the recommended setting.
 #    open = false;
 
     # Enable the Nvidia settings menu,
-	# accessible via `nvidia-settings`.
+# accessible via `nvidia-settings`.
 #    nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
@@ -69,14 +70,15 @@
   #boot.loader.grub.fontSize = "20";
   #boot.loader.grub.configurationLimit = 7;
   #boot.loader.grub.useOSProber = false;
-  
+ 
   boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 7;
+  boot.loader.systemd-boot.configurationLimit = 5;
   boot.modprobeConfig.enable = true;
-  services.hddfancontrol.enable = true; 
-
-  boot.initrd.kernelModules = [ "kvm-intel"];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # services.hddfancontrol.enable = true;
+ 
+  boot.initrd.kernelModules = ["kvm-intel"];
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
 
   #direnv
   programs.direnv.enable = true;
@@ -114,35 +116,29 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.lightdm.greeters.slick.enable = true;
-  
-  # xfce desktop
-  services.xserver.desktopManager.xfce.enable = true; 
-  services.xserver.desktopManager.xfce.noDesktop = true;
-
-  # Plasma desktop
-  services.desktopManager.plasma6.enable = true;
 
   # gnome desktop
   programs.dconf.enable = true;
   nixpkgs.config.allowAliases = false;
   services.sysprof.enable = true;
   # nixpkgs.config.firefox.enableGnomeExtensions = true;
+ 
+  # hyprland
+  # programs.hyprland.enable = true;
 
   # Configure keymap in X11
   services.xserver = {
-    layout = "us";
+    xkb.layout = "us";
     xkbVariant = "";
   };
 
   # enable flatpak
   services.flatpak.enable = true;
-  
+ 
   # xdg portals
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-cosmic pkgs.xdg-desktop-portal-hyprland ];
-  xdg.portal.config.common.default = "";
+  xdg.portal.config.common.default = "gtk";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -174,6 +170,7 @@
     packages = with pkgs; [
       firefox
       ungoogled-chromium
+      vlc
     ];
   };
 
@@ -185,19 +182,19 @@
   virtualisation.podman.enable = true;
   # virtualisation.podman.networkSocket.enable = true;
 
-  # docker 
+  # docker
   virtualisation.docker.enable = true;
   # virtualisation.podman.dockerSocket.enable = true;
-  
+ 
   #spices (virtualization)
   services.spice-vdagentd.enable = true;  
-  
+ 
   # LF file manager
   # programs.lf.enable = true;
 
   # ZRAM
   zramSwap.enable = true;
-  
+ 
   # zsh terminal
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -205,9 +202,9 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Enable Flakes and the command-line tool with nix command settings 
+  # Enable Flakes and the command-line tool with nix command settings
   nix.settings.experimental-features = [ "nix-command flakes"];
-  
+ 
    # Set default editor to vim
   environment.variables.EDITOR = "lvim";
 
@@ -215,7 +212,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
      #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-   # bash and zsh 
+   # bash and zsh
     nix-bash-completions
     nix-zsh-completions
     zsh-autocomplete
@@ -250,8 +247,10 @@
     nix-build-uncached
     nom
     nitch
+    nh
     nil
 
+    # zsh configs
     zsh-z
     zsh-bd
     zsh-abbr
@@ -267,7 +266,7 @@
     zsh-powerlevel10k
     zsh-autocomplete
 
-    # system pacakages
+    # system packages
     gzip
     wget
     curl
@@ -276,7 +275,6 @@
     meson
     gcc
     clang
-    cl 
     zig
     cmake
     ninja
@@ -311,14 +309,16 @@
     rPackages.gbm
     gtk-layer-shell
     clipit
-    nitrogen
     gvfs
     topgrade
     libvirt
     neocmakelsp
     lua
+    toybox
+    lsp-plugins
+    wayland-protocols
+    cheese
    
-    
    # hyprland packages
     yazi
     yazi-unwrapped
@@ -346,11 +346,11 @@
     nwg-look
     feh
     wl-clipboard
-    wlogout 
+    wlogout
     ranger
     variety
     clipit
-    volumeicon
+    # volumeicon
     rofi-power-menu
     blueberry
     hyprland-protocols
@@ -364,6 +364,26 @@
     swaybg
     gnumake
     gnumake42
+    wl-clipboard
+    lxappearance-gtk2
+
+    # waybar appllcations
+    # waybar
+    #gtkmm3
+    #jsoncpp
+    #fmt
+    #spdlog
+    # libgtk-3-dev #[gtk-layer-shell]
+    #gobject-introspection #[gtk-layer-shell]
+    # libpulse #[Pulseaudio module]
+    #libnl #[Network module]
+    #libappindicator-gtk3 #[Tray module]
+    #libdbusmenu-gtk3 #[Tray module]
+    #libmpdclient #[MPD module]
+    # libsndio #[sndio module# ]
+    #libevdev #[KeyboardState module]
+    # xkbregistry
+    #upower #[UPower battery module]
 
    # smartcard applications
     pam_p11
@@ -377,7 +397,7 @@
     pkgs.pcsclite
     pkgs.opensc
 
-   # vim and programming langauges 
+   # vim and programming langauges
     vim
     neovim
     lunarvim
@@ -385,23 +405,31 @@
     nodejs_22
     lua
     python3
-    
+   
     flam3
     qosmic
+
+    xdg-desktop-portal-cosmic
 
    # gaming
     sc-controller
     gamescope
     protonup-qt
     lutris
-      
+    #steam-run
+   
     # applications
     virt-manager
     sublime4
     gnome-boxes
     alacritty
-    kdePackages.okular 
+    alacritty-graphics
+    kdePackages.okular
     libreoffice-still
+    swaybg
+    hyprpaper
+    brave
+
    ];
    
    # fonts, folders, themes, icons
@@ -425,53 +453,67 @@
       material-icons
       material-design-icons
       sweet-folders
+      sweet
       powerline-fonts
       corefonts
       google-fonts
       jetbrains-mono
-      candy-icons
       udev-gothic
       hack-font
-    
-    ];
+      beauty-line-icon-theme
+   
+     ];
 
     fontconfig.defaultFonts = {
       serif = [ "Noto Serif" "Source Han Serif" ];
       sansSerif = [ "Open Sans" "Source Han Sans" ];
       emoji = [ "openmoji-color" ];
-    };
-  };    
-    
-  # DBus
-    services.dbus.packages = with pkgs; [
-    xfce.xfconf
-  ];
-  
-  # NH environment.sessionVariables
-    programs.nh = {
-    enable = true;
-    #clean.enable = true;
-    #clean.extraArgs = "--keep-since 7d --keep 5";
-    flake = "/etc/nixos/";
-        };
+      };
+    };    
 
-  # Hyprland window manager
-   programs.hyprland.enable = true;
-   programs.waybar.enable = true;
-  
-  # STEAM Gaming
-  programs.steam.enable = true;
+    # NH environment.sessionVariables
+   programs.nh = {
+   enable = true;
+   clean.enable = true;
+   clean.extraArgs = "--keep-since 7d --keep 5";
+   flake = "/etc/nixos/";
+   };
+
+    # cosmic-comp (for clipboard - to copy things in cosmic)
+    environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
+    #systemd.packages = [ pkgs.observatory ];
+    #systemd.services.monitord.wantedBy = [ "multi-user.target" ];
+
+   # Hyprland window manager
+    programs.hyprland.enable = true;
+    programs.waybar = { 
+    enable = true;
+    systemd.target = "hyprland.target";
+      };
+ 
+    # withUWSM = true;
+    security.pam.services.hyprlock = {};
+ 
 
    # nix grub generations
-   system.autoUpgrade.enable = true;
-   system.autoUpgrade.operation = "boot";
-   system.autoUpgrade.dates = "24:00";
-   # nix.settings.auto-optimise-store = true;
-   nix.gc = {
-   automatic = true;
-   dates = "Sun 24:00";
-   options = "--delete-older-than 7d";
-  };
+   system.autoUpgrade = {
+   enable = true;
+   flake = "/etc/nixos/flake.nix";
+   flags = [
+    "nix-update"
+    "nixpkgs"
+    "-L" # print build logs
+   ];
+   operation = "boot";
+   randomizedDelaySec = "30min";
+   dates = "24:00";
+      };
+   #nix.settings.auto-optimise-store = true;
+   #nix.gc = {
+   #automatic = true;
+   #dates = "Sun 24:00";
+   #options = "--delete-older-than 7d";
+   #  };
 
     nixpkgs.config.permittedInsecurePackages = [
     "nodejs-12.22.12"
@@ -487,18 +529,20 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-   
-    # Thinkpad
+
+   # Thinkpad
     services.thinkfan.enable = true;
     # services.thinkfan.levels = [ "level auto"];
     # services.tlp.enable = true;
+   
+  services.power-profiles-daemon.enable = true;
 
 
   # List services that you want to enable:
     services.sshd.enable = true;
     services.pcscd.enable = true;
     security.pam.p11.enable = true;
-    services.teamviewer.enable = true;
+  #  services.teamviewer.enable = true;
     services.postgresql.enable = true;
     services.tailscale.enable = true;
     services.gvfs.enable = true;
@@ -507,15 +551,19 @@
     services.picom.activeOpacity = 0.8;
     services.picom.shadowOpacity = 0.75;
     services.picom.menuOpacity = 0.8;
+    #services.pulseaudo.enable = true;
 
-    # list of programs with services
+  # list of programs with services
+    programs.steam.enable = true;
+  #  programs.steam.extest.enable = true;
+    programs.gamescope.enable = true;
     programs.zsh.enableLsColors = true;
     programs.zsh.enableCompletion = true;
     programs.zsh.enableBashCompletion = true;
     programs.zsh.autosuggestions.strategy = [
      "history"
       ];
-    programs.thunar.enable = true;  
+    programs.thunar.enable = true;
     programs.zsh.autosuggestions.async = true;
     virtualisation.kvmgt.enable = true;
     programs.file-roller.enable = true;
@@ -523,8 +571,8 @@
      enable = true;
      nvidiaSupport = false;
        };
+ 
 
-    # security polkit
     security.polkit.extraConfig = ''
       polkit.addRule(function(action, subject) {
         if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
@@ -534,16 +582,28 @@
       });
   '';  
              
-    
-  # cosmic-desktop services
+   
+  # cosmic-desktop & other desktop services
   # List services that you want to enable:
-  #services.desktopManager.cosmic.enable = true;
+  services.xserver.desktopManager.xfce.enable = true;
+  services.xserver.desktopManager.xfce.enableXfwm = true;
+  services.desktopManager.cosmic.enable = true;
   #services.displayManager.cosmic-greeter.enable = true;
-  
+  services.desktopManager.cosmic.xwayland.enable = true;
+  services.greetd = {
+  enable = true;
+  vt = 3;
+  settings = {
+      default_session = {
+    command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd hyprland";
+        };
+      };
+    };
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.ports = [
-  	22 80
+  22 80
    ];
 
   # Open ports in the firewall.
