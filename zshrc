@@ -8,7 +8,18 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="jonathan"
+
+#ZSH_THEME="jonathan"
+#ZSH_THEME="agnoster"
+ZSH_THEME="lambda"
+#ZSH_THEME="fino-time"
+#ZSH_THEME="fox"
+#ZSH_THEME="gnzh"
+#ZSH_THEME="half-life"
+#ZSH_THEME="intheloop"
+#ZSH_THEME="kardan"
+#ZSH_THEME="linuxonly"
+
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -112,7 +123,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=black,bold,underline"
 #pfetch
 #fastfetch
 # neofetch
- nitch
+#nitch
 
 source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
@@ -133,10 +144,13 @@ alias nix-flake='sudo lvim /etc/nixos/flake.nix'
 alias rog='rog-control-center'
 alias nix-update='nh os switch'
 alias update-nix='sudo nixos-rebuild switch'
-alias cd-flake='cd /etc/nixos/'
-alias update-flake='sudo nix flake update'
+alias update-flake='cd /etc/nixos/ && sudo nix flake update'
+#alias update-flake='sudo nix flake update'
 alias search='nix-search'
 alias zshrc='sudo lvim .zshrc'
 alias bashrc='sudo lvim .bashrc'
 alias shell='sudo nix-shell -p'
-alias hyprland-config='sudo lvim .config/hypr/hyprland.conf'
+alias hyprland-config='sudo vim .config/hypr/hyprland.conf'
+alias reboot='systemctl reboot'
+alias poweroff='systemctl poweroff'
+
