@@ -17,6 +17,8 @@
   enable = true;
   };
 
+# Uncomment for the AMD or Nvidia ( READ WITH CAUTION AND BEFORE YOU UNCOMMENT) 
+
 ############ amdgpu setup #############
 #   Enable OpenGL
 #  hardware.opengl = {
@@ -75,9 +77,26 @@
   boot.loader.systemd-boot.configurationLimit = 5;
   boot.modprobeConfig.enable = true;
   # services.hddfancontrol.enable = true;
- 
+  
+  # boot options based on cpu parameters
   boot.initrd.kernelModules = ["kvm-intel"];
   boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+
+  # boot kernel modules
+  boot.extraModulePackages = with config.boot.kernelPackages; 
+     [ pkgs.linuxKernel.packages.linux_xanmod_latest.tp_smapi ];
+  
+  # boot kernel extra modified configurations
+  boot.extraModprobeConfig =''
+  options thinkpad_acpi=fancontrol=1 
+  options usbcore
+  '';
+    
+  #boot kernel parameters
+  boot.kernelParams = [
+   "quiet"
+   "splash"
+  ];
   # boot.kernelPackages = pkgs.linuxPackages_latest;
 
   #direnv
@@ -115,7 +134,12 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  services.xserver = {
+  enable = true;
+  displayManager.sessionCommands = ''
+  xset r rate 200 35 & 
+   '';
+  };
 
   # gnome desktop
   programs.dconf.enable = true;
@@ -264,7 +288,6 @@
     zsh-nix-shell
     zsh-clipboard
     zsh-completions
-    zsh-git-prompt
     zsh-powerlevel10k
     zsh-autocomplete
 
@@ -272,7 +295,7 @@
     gzip
     wget
     curl
-    pkgs.libsForQt5.ark
+    pkgs.kdePackages.ark
     git
     meson
     gcc
@@ -323,21 +346,19 @@
     hyprpolkitagent
     volumeicon
     flameshot
-    papirus-nord
-    papirus-folders
-    sweet-folders
+    xorg.xkill
    
    # hyprland / xfce4 / i3wm packages
     yazi
     yazi-unwrapped
-   # waypaper
-   # hyprpaper
+   # waypaper  #hyprland
+   # hyprpaper  #hyprland
     xfce.thunar-archive-plugin
     xfce.thunar
     xfce.thunar-volman
     dmenu
     rofi
-    autotiling
+    autotiling-rs
     lxappearance
     xfce.xfce4-terminal
     xfce.xfce4-settings
@@ -348,26 +369,26 @@
     networkmanager_dmenu
     clipmenu
     brightnessctl
-  #  nwg-look
+  #  nwg-look   #hyprland
     feh
-    wl-clipboard
-    wl-clipboard-x11
+  #  wl-clipboard  #hyprland
+    wl-clipboard-x11   #hyprland
     wlogout
     ranger
     variety
     clipit
-    # volumeicon
+    volumeicon
     rofi-power-menu
     blueberry
     hyprland-protocols
     libdrm
-  #  wayland
-  #  wayland-protocols
-  #  xdg-desktop-portal-hyprland
-    wofi
-    kitty
-    kitty-themes
-  #  swaybg
+  #  wayland    #hyprland
+  #  wayland-protocols    #hyprland
+  #  xdg-desktop-portal-hyprland    #hyprland
+  #  wofi
+    kitty   #hyprland
+    kitty-themes    #hyprland
+  #  swaybg  #hyprland
     gnumake
     gnumake42
     clipboard-jh
@@ -412,7 +433,7 @@
     vimPlugins.nvim-treesitter-textsubjects
     nodejs_22
     lua
-    python3
+    # python3
     flam3
     qosmic
     xdg-desktop-portal-cosmic
@@ -436,12 +457,31 @@
     hyprpaper
     brave
     blueberry
+    ladybird
+    vscodium
 
+    # folders and themes
+    nixos-icons
+    material-icons
+    material-design-icons
+    sweet-folders
+    sweet
+    papirus-nord
+    papirus-folders
+    catppuccin
+    ubuntu-themes
+    fcitx5-material-color
+    stilo-themes
+    beauty-line-icon-theme
+    
+    # polybar
+    # polybarFull
+   
    ];
    
    # fonts, folders, themes, icons
-    fonts = {
-    fonts = with pkgs; [
+  
+    fonts.packages = with pkgs; [
       noto-fonts
       font-awesome
       font-awesome_5
@@ -456,33 +496,14 @@
       nerd-fonts.ubuntu
       terminus_font
       jetbrains-mono
-      nixos-icons
-      material-icons
-      material-design-icons
-      sweet-folders
-      sweet
       powerline-fonts
       corefonts
       google-fonts
       jetbrains-mono
       udev-gothic
       hack-font
-      beauty-line-icon-theme
-      papirus-nord
-      papirus-folders
-      catppuccin
-      ubuntu-themes
-      fcitx5-material-color
-      stilo-themes
    
-     ];
-
-    fontconfig.defaultFonts = {
-      serif = [ "Noto Serif" "Source Han Serif" ];
-      sansSerif = [ "Open Sans" "Source Han Sans" ];
-      emoji = [ "openmoji-color" ];
-      };
-    };    
+     ];    
 
     # NH environment.sessionVariables
    programs.nh = {
@@ -511,9 +532,9 @@
    # nix grub generations
    system.autoUpgrade = {
    enable = true;
-   flake = "/etc/nixos/flake.nix";
+   #flake = "/etc/nixos/flake.nix";
    flags = [
-    "nix-update"
+   # "nix-update"
     "nixpkgs"
     "-L" # print build logs
    ];
@@ -533,6 +554,7 @@
     "python-2.7.18.7"
     "nix-2.17.1"
     "openssl-1.1.1w"
+    "qtwebengine-5.15.19"
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -546,9 +568,9 @@
    # Thinkpad
     services.thinkfan.enable = true;
     # services.thinkfan.levels = [ "level auto"];
-    # services.tlp.enable = true;
+    services.tlp.enable = true;
    
-   services.power-profiles-daemon.enable = true;
+   #services.power-profiles-daemon.enable = true;
 
 
   # List services that you want to enable:
@@ -560,11 +582,16 @@
     services.tailscale.enable = true;
     services.gvfs.enable = true;
     services.smartd.enable = true;
-    services.picom.enable = true;
-    services.picom.activeOpacity = 1.0;
-    services.picom.inactiveOpacity = 0.9;
-    services.picom.shadowOpacity = 0.9;
-    services.picom.menuOpacity = 0.9;
+    services.picom = {
+       enable = true;
+       backend = "glx";
+       fade = true;
+       activeOpacity = 1.0;
+       inactiveOpacity = 0.9;
+       shadowOpacity = 0.9;
+       menuOpacity = 0.9;
+    };
+
     services.blueman.enable = true;
     #services.pulseaudo.enable = true;
 
@@ -610,10 +637,11 @@
 
   #services.desktopManager.cosmic.enable = true;
   #services.displayManager.cosmic-greeter.enable = true;
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.lightdm.greeters.slick.enable = true;
+  #services.xserver.displayManager.lightdm.enable = true;
+  #services.xserver.displayManager.lightdm.greeters.slick.enable = true;
   #services.desktopManager.cosmic.xwayland.enable = true;
-  
+  services.displayManager.ly.enable = true;
+
   #services.greetd = {
   #enable = true;
   ## VT1 = 3;
