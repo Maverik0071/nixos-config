@@ -17,6 +17,8 @@
   enable = true;
   };
 
+# Uncomment for the AMD or Nvidia ( READ WITH CAUTION AND BEFORE YOU UNCOMMENT) 
+
 ############ amdgpu setup #############
 #   Enable OpenGL
 #  hardware.opengl = {
@@ -132,7 +134,12 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  services.xserver = {
+  enable = true;
+  displayManager.sessionCommands = ''
+  xset r rate 200 35 & 
+   '';
+  };
 
   # gnome desktop
   programs.dconf.enable = true;
@@ -156,7 +163,8 @@
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ 
   # pkgs.xdg-desktop-portal-cosmic 
-  pkgs.xdg-desktop-portal-hyprland ];
+  #pkgs.xdg-desktop-portal-hyprland
+  pkgs.xdg-desktop-portal-wlr];
   xdg.portal.config.common.default = " ";
 
   # Enable CUPS to print documents.
@@ -281,7 +289,6 @@
     zsh-nix-shell
     zsh-clipboard
     zsh-completions
-    zsh-git-prompt
     zsh-powerlevel10k
     zsh-autocomplete
 
@@ -289,7 +296,7 @@
     gzip
     wget
     curl
-    pkgs.libsForQt5.ark
+    pkgs.kdePackages.ark
     git
     meson
     gcc
@@ -345,28 +352,29 @@
    # hyprland / xfce4 / i3wm packages
     yazi
     yazi-unwrapped
-   # waypaper
-   # hyprpaper
+   # waypaper  #hyprland
+   # hyprpaper  #hyprland
     xfce.thunar-archive-plugin
     xfce.thunar
     xfce.thunar-volman
     dmenu
     rofi
-    autotiling
+    autotiling-rs
     lxappearance
     xfce.xfce4-terminal
     xfce.xfce4-settings
     dunst
+    mako
     pavucontrol
     jgmenu
     picom
     networkmanager_dmenu
     clipmenu
     brightnessctl
-  #  nwg-look
+  #  nwg-look   #hyprland
     feh
-    wl-clipboard
-    wl-clipboard-x11
+    wl-clipboard  #hyprland
+    wl-clipboard-x11   #hyprland
     wlogout
     ranger
     variety
@@ -374,15 +382,15 @@
     volumeicon
     rofi-power-menu
     blueberry
-    hyprland-protocols
+    # hyprland-protocols
     libdrm
-  #  wayland
-  #  wayland-protocols
-  #  xdg-desktop-portal-hyprland
+  #  wayland    #hyprland
+    wayland-protocols    #hyprland
+  #  xdg-desktop-portal-hyprland    #hyprland
     wofi
-    kitty
-    kitty-themes
-  #  swaybg
+    kitty   #hyprland
+    kitty-themes    #hyprland
+    swaybg  #hyprland
     gnumake
     gnumake42
     clipboard-jh
@@ -391,22 +399,27 @@
 
     # waybar appllcations  : uncomment if waybar isnt working for hyprland
 
-    # waybar
-    #gtkmm3
-    #jsoncpp
-    #fmt
-    #spdlog
-    # libgtk-3-dev #[gtk-layer-shell]
-    #gobject-introspection #[gtk-layer-shell]
+     waybar
+    gtkmm3
+    jsoncpp
+    fmt
+    spdlog
+    #libgtk-3-dev #[gtk-layer-shell]
+    libgtkflow3
+    gobject-introspection #[gtk-layer-shell]
     # libpulse #[Pulseaudio module]
-    #libnl #[Network module]
-    #libappindicator-gtk3 #[Tray module]
-    #libdbusmenu-gtk3 #[Tray module]
-    #libmpdclient #[MPD module]
-    # libsndio #[sndio module# ]
-    #libevdev #[KeyboardState module]
+    libpulseaudio
+    libnl #[Network module]
+    libappindicator-gtk3 #[Tray module]
+    libdbusmenu-gtk3 #[Tray module]
+    libmpdclient #[MPD module]
+    #libsndio #[sndio module# ]
+    libsndfile
+    libevdev #[KeyboardState module]
     # xkbregistry
-    #upower #[UPower battery module]
+    xkbutils
+    xorg.xkbutils
+    upower #[UPower battery module]
 
    # smartcard applications
     pam_p11
@@ -427,7 +440,7 @@
     vimPlugins.nvim-treesitter-textsubjects
     nodejs_22
     lua
-    python3
+    # python3
     flam3
     qosmic
     xdg-desktop-portal-cosmic
@@ -451,6 +464,9 @@
     hyprpaper
     brave
     blueberry
+    ladybird
+    vscodium
+    eww
 
     # folders and themes
     nixos-icons
@@ -465,12 +481,15 @@
     fcitx5-material-color
     stilo-themes
     beauty-line-icon-theme
-
+    
+    # polybar
+    # polybarFull
+   
    ];
    
    # fonts, folders, themes, icons
-    fonts = {
-    fonts = with pkgs; [
+  
+    fonts.packages = with pkgs; [
       noto-fonts
       font-awesome
       font-awesome_5
@@ -492,14 +511,7 @@
       udev-gothic
       hack-font
    
-     ];
-
-    fontconfig.defaultFonts = {
-      serif = [ "Noto Serif" "Source Han Serif" ];
-      sansSerif = [ "Open Sans" "Source Han Sans" ];
-      emoji = [ "openmoji-color" ];
-      };
-    };    
+     ];    
 
     # NH environment.sessionVariables
    programs.nh = {
@@ -516,10 +528,10 @@
 
    # Hyprland window manager
    # programs.hyprland.enable = true;
-   # programs.waybar = { 
-   # enable = true;
-   # systemd.target = "hyprland.target";
-   #   };
+   programs.waybar = { 
+   enable = true;
+   #systemd.target = "sway.target";
+      };
  
     # withUWSM = true;
     #security.pam.services.hyprlock = {};
@@ -529,11 +541,11 @@
    system.autoUpgrade = {
    enable = true;
    #flake = "/etc/nixos/flake.nix";
-   #flags = [
+   flags = [
    # "nix-update"
-   # "nixpkgs"
-   # "-L" # print build logs
-   #];
+    "nixpkgs"
+    "-L" # print build logs
+   ];
    operation = "boot";
    randomizedDelaySec = "30min";
    dates = "24:00";
@@ -550,6 +562,7 @@
     "python-2.7.18.7"
     "nix-2.17.1"
     "openssl-1.1.1w"
+    "qtwebengine-5.15.19"
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -577,11 +590,17 @@
     services.tailscale.enable = true;
     services.gvfs.enable = true;
     services.smartd.enable = true;
-    services.picom.enable = true;
-    services.picom.activeOpacity = 1.0;
-    services.picom.inactiveOpacity = 0.9;
-    services.picom.shadowOpacity = 0.9;
-    services.picom.menuOpacity = 0.9;
+    services.picom = {
+       enable = true;
+       backend = "glx";
+       fade = true;
+       activeOpacity = 1.0;
+       inactiveOpacity = 0.9;
+       shadowOpacity = 0.9;
+       menuOpacity = 0.9;
+    };
+    hardware.bluetooth.enable = true;
+    hardware.bluetooth.powerOnBoot = true;
     services.blueman.enable = true;
     #services.pulseaudo.enable = true;
 
@@ -604,6 +623,21 @@
      nvidiaSupport = false;
        };
     programs.i3lock.enable = true;
+    programs.sway.enable = true;
+    programs.sway.xwayland.enable = true;
+    xdg.portal.wlr.enable = true;
+    programs.sway.extraSessionCommands = 
+      ''
+    # SDL:
+    export SDL_VIDEODRIVER=wayland
+    # QT (needs qt5.qtwayland in systemPackages):
+    export QT_QPA_PLATFORM=wayland-egl
+    export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+    # Fix for some Java AWT applications (e.g. Android Studio),
+    # use this if they aren't displayed properly:
+    export _JAVA_AWT_WM_NONREPARENTING=1
+   '';
+
  
 
     security.polkit.extraConfig = ''
@@ -627,10 +661,12 @@
 
   #services.desktopManager.cosmic.enable = true;
   #services.displayManager.cosmic-greeter.enable = true;
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.lightdm.greeters.slick.enable = true;
+  #services.xserver.displayManager.lightdm.enable = true;
+  #services.xserver.displayManager.lightdm.greeters.slick.enable = true;
   #services.desktopManager.cosmic.xwayland.enable = true;
-  
+  services.displayManager.ly.enable = true;
+
+  # greetd
   #services.greetd = {
   #enable = true;
   ## VT1 = 3;
