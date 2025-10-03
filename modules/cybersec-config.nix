@@ -530,7 +530,7 @@
    # programs.hyprland.enable = true;
    programs.waybar = { 
    enable = true;
-   #systemd.target = "sway.target";
+   #systemd.target = "hyprland.target";
       };
  
     # withUWSM = true;
@@ -540,7 +540,7 @@
    # nix grub generations
    system.autoUpgrade = {
    enable = true;
-   #flake = "/etc/nixos/flake.nix";
+   flake = "/etc/nixos/";
    flags = [
    # "nix-update"
     "nixpkgs"
@@ -575,7 +575,7 @@
 
    # Thinkpad
     services.thinkfan.enable = true;
-    # services.thinkfan.levels = [ "level auto"];
+    #services.thinkfan.levels = [ "auto"];
     services.tlp.enable = true;
    
    #services.power-profiles-daemon.enable = true;
@@ -623,20 +623,20 @@
      nvidiaSupport = false;
        };
     programs.i3lock.enable = true;
-    programs.sway.enable = true;
-    programs.sway.xwayland.enable = true;
+    #programs.sway.enable = true;
+    #programs.sway.xwayland.enable = true;
     xdg.portal.wlr.enable = true;
-    programs.sway.extraSessionCommands = 
-      ''
+    #programs.sway.extraSessionCommands = 
+    #  ''
     # SDL:
-    export SDL_VIDEODRIVER=wayland
+    #export SDL_VIDEODRIVER=wayland
     # QT (needs qt5.qtwayland in systemPackages):
-    export QT_QPA_PLATFORM=wayland-egl
-    export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+    #export QT_QPA_PLATFORM=wayland-egl
+    #export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
     # Fix for some Java AWT applications (e.g. Android Studio),
     # use this if they aren't displayed properly:
-    export _JAVA_AWT_WM_NONREPARENTING=1
-   '';
+    #export _JAVA_AWT_WM_NONREPARENTING=1
+    # '';
 
  
 
