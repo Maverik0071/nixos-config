@@ -9,8 +9,8 @@
       "on-click-middle": "",
       "on-click-right": "",
       "on-update": "",
-      "on-scroll-up": "~/.config/hypr/scripts/brightness --inc",
-      "on-scroll-down": "~/.config/hypr/scripts/brightness --dec",
+      "on-scroll-up": "~/.config/sway/scripts/brightness --inc",
+      "on-scroll-down": "~/.config/sway/scripts/brightness --dec",
       "smooth-scrolling-threshold": 1,
     },
 
@@ -37,7 +37,7 @@
     "on-scroll-down": "hyprctl dispatch workspace e-1",
   },
 
-  "wlr/workspaces": {
+  "sway/workspaces": {
     "format": "{icon}",
     "on-click": "activate",
     "all-outputs": true,
