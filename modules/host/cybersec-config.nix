@@ -163,7 +163,8 @@
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ 
   # pkgs.xdg-desktop-portal-cosmic 
-  pkgs.xdg-desktop-portal-hyprland ];
+  #pkgs.xdg-desktop-portal-hyprland
+  pkgs.xdg-desktop-portal-wlr];
   xdg.portal.config.common.default = " ";
 
   # Enable CUPS to print documents.
@@ -363,6 +364,7 @@
     xfce.xfce4-terminal
     xfce.xfce4-settings
     dunst
+    mako
     pavucontrol
     jgmenu
     picom
@@ -371,7 +373,7 @@
     brightnessctl
   #  nwg-look   #hyprland
     feh
-  #  wl-clipboard  #hyprland
+    wl-clipboard  #hyprland
     wl-clipboard-x11   #hyprland
     wlogout
     ranger
@@ -380,15 +382,15 @@
     volumeicon
     rofi-power-menu
     blueberry
-    hyprland-protocols
+    # hyprland-protocols
     libdrm
   #  wayland    #hyprland
-  #  wayland-protocols    #hyprland
+    wayland-protocols    #hyprland
   #  xdg-desktop-portal-hyprland    #hyprland
-  #  wofi
+    wofi
     kitty   #hyprland
     kitty-themes    #hyprland
-  #  swaybg  #hyprland
+    swaybg  #hyprland
     gnumake
     gnumake42
     clipboard-jh
@@ -397,22 +399,27 @@
 
     # waybar appllcations  : uncomment if waybar isnt working for hyprland
 
-    # waybar
-    #gtkmm3
-    #jsoncpp
-    #fmt
-    #spdlog
-    # libgtk-3-dev #[gtk-layer-shell]
-    #gobject-introspection #[gtk-layer-shell]
+     waybar
+    gtkmm3
+    jsoncpp
+    fmt
+    spdlog
+    #libgtk-3-dev #[gtk-layer-shell]
+    libgtkflow3
+    gobject-introspection #[gtk-layer-shell]
     # libpulse #[Pulseaudio module]
-    #libnl #[Network module]
-    #libappindicator-gtk3 #[Tray module]
-    #libdbusmenu-gtk3 #[Tray module]
-    #libmpdclient #[MPD module]
-    # libsndio #[sndio module# ]
-    #libevdev #[KeyboardState module]
+    libpulseaudio
+    libnl #[Network module]
+    libappindicator-gtk3 #[Tray module]
+    libdbusmenu-gtk3 #[Tray module]
+    libmpdclient #[MPD module]
+    #libsndio #[sndio module# ]
+    libsndfile
+    libevdev #[KeyboardState module]
     # xkbregistry
-    #upower #[UPower battery module]
+    xkbutils
+    xorg.xkbutils
+    upower #[UPower battery module]
 
    # smartcard applications
     pam_p11
@@ -459,6 +466,7 @@
     blueberry
     ladybird
     vscodium
+    eww
 
     # folders and themes
     nixos-icons
@@ -520,10 +528,10 @@
 
    # Hyprland window manager
    # programs.hyprland.enable = true;
-   # programs.waybar = { 
-   # enable = true;
-   # systemd.target = "hyprland.target";
-   #   };
+   programs.waybar = { 
+   enable = true;
+   #systemd.target = "hyprland.target";
+      };
  
     # withUWSM = true;
     #security.pam.services.hyprlock = {};
@@ -532,7 +540,7 @@
    # nix grub generations
    system.autoUpgrade = {
    enable = true;
-   #flake = "/etc/nixos/flake.nix";
+   flake = "/etc/nixos/";
    flags = [
    # "nix-update"
     "nixpkgs"
@@ -567,7 +575,7 @@
 
    # Thinkpad
     services.thinkfan.enable = true;
-    # services.thinkfan.levels = [ "level auto"];
+    #services.thinkfan.levels = [ "auto"];
     services.tlp.enable = true;
    
    #services.power-profiles-daemon.enable = true;
@@ -591,7 +599,8 @@
        shadowOpacity = 0.9;
        menuOpacity = 0.9;
     };
-
+    hardware.bluetooth.enable = true;
+    hardware.bluetooth.powerOnBoot = true;
     services.blueman.enable = true;
     #services.pulseaudo.enable = true;
 
@@ -614,6 +623,21 @@
      nvidiaSupport = false;
        };
     programs.i3lock.enable = true;
+    programs.sway.enable = true;
+    programs.sway.xwayland.enable = true;
+    xdg.portal.wlr.enable = true;
+    programs.sway.extraSessionCommands = 
+      ''
+    # SDL:
+    export SDL_VIDEODRIVER=wayland
+    # QT (needs qt5.qtwayland in systemPackages):
+    export QT_QPA_PLATFORM=wayland-egl
+    export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+    # Fix for some Java AWT applications (e.g. Android Studio),
+    # use this if they aren't displayed properly:
+    export _JAVA_AWT_WM_NONREPARENTING=1
+    # '';
+
  
 
     security.polkit.extraConfig = ''
@@ -642,6 +666,7 @@
   #services.desktopManager.cosmic.xwayland.enable = true;
   services.displayManager.ly.enable = true;
 
+  # greetd
   #services.greetd = {
   #enable = true;
   ## VT1 = 3;
