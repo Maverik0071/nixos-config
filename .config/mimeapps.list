@@ -1,4 +1,4 @@
 [Added Associations]
 image/png=org.xfce.ristretto.desktop;
-text/plain=lvim.desktop;org.xfce.mousepad.desktop;
+text/plain=org.xfce.mousepad.desktop;lvim.desktop;
 image/jpeg=feh.desktop;
