@@ -1,0 +1,375 @@
+* {
+    font-family:"VictorMono Nerd Font";
+    font-size:24px;
+    /* background:rgba(0, 0, 0, 0); */
+    color:#fedd83;
+}
+
+window {
+    background:none;
+}
+
+tooltip {
+    border:none;
+    border-radius:0;
+    outline:none;
+    color:#fedd83;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+    margin-bottom:1px;
+    padding:0;
+}
+
+#window {
+    color:#fedd83;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+    padding-left:5px;
+}
+
+#mpd {
+    color:#fedd83;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+}
+
+#cpu, #wireplumber.muted, #pulseaudio.muted, #privacy {
+    color:#fe0219;
+    background:linear-gradient(0deg, rgba(238, 0, 10, 0.5), rgba(0, 0, 0, 0.4));
+    margin-right:0;
+    padding-left:10px;
+    padding-right:10px;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+    transition:all 0.2s ease 0s;
+}
+
+#cpu:hover, #wireplumber.muted:hover, #pulseaudio.muted:hover {
+    color:#efefef;
+    background:linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(0, 0, 0, 0.4));
+    text-shadow:2px 2px rgba(60, 60, 60, 0.6);
+}
+
+#cpu {
+    margin-left:3px;
+    margin-right:0px;
+    padding-left:13px;
+    padding-right:10px;
+    border-radius:40px 0px 0px 40px;
+}
+
+#cpu, #wireplumber.muted {
+    margin-left:0;
+}
+
+#pulseaudio, #disk {
+    color:#f4df23;
+    background:linear-gradient(0deg, rgba(228, 207, 19, 0.5), rgba(0, 0, 0, 0.4));
+    margin-left:2px;
+    margin-right:0;
+    padding-left:10px;
+    padding-right:11px;
+    border-radius:40px 0px 0px 40px;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+}
+
+#disk {
+    transition:all 0.2s ease 0s;
+}
+#disk:hover, #pulseaudio:hover, #pulseaudio.bluetooth:hover {
+    background:linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(0, 0, 0, 0.4));
+    color:#efefef;
+    text-shadow:2px 2px rgba(80, 80, 80, 0.6);
+}
+
+#pulseaudio {
+    border-radius:40px 40px 40px 40px;
+    padding-left:11px;
+    padding-right:12px;
+    margin-right:4px;
+    margin-left:1px;
+    box-shadow:3px 3px rgba(228, 207, 19, 0.4);
+    transition:all 0.2s ease 0s;
+}
+#pulseaudio:hover, #pulseaudio.bluetooth:hover {
+    box-shadow:3px 3px rgba(80, 80, 80, 0.6);
+}
+
+#pulseaudio.muted {
+    margin-left:2px;
+    margin-right:4px;
+    box-shadow:3px 3px rgba(238, 0, 10, 0.4);
+    padding-left:12px;
+    padding-right:12px;
+}
+
+#privacy-item {
+    padding-left:4px;
+    padding-right:4px;
+    background:none;
+    color:#fe0219;
+}
+
+#privacy-item label {
+    color:#fe0219;
+}
+
+#memory, #backlight, #wireplumber {
+    color:#a9df11;
+    background:linear-gradient(0deg, rgba(153, 208, 2, 0.5), rgba(0, 0, 0, 0.4));
+    margin-left:0;
+    margin-right:0;
+    padding-left:10px;
+    padding-right:10px;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+    transition:all 0.2s ease 0s;
+}
+
+#memory:hover, #backlight:hover, #wireplumber:hover {
+    background:linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(0, 0, 0, 0.4));
+    color:#efefef;
+    text-shadow:2px 2px rgba(50, 50, 50, 0.6);
+}
+
+#workspaces button, #tags button {
+    background:linear-gradient(0deg, rgba(60, 60, 30, 0.5), rgba(0, 0, 0, 0.5));
+    padding-left:16px;
+    padding-right:18px;
+    margin-left:2px;
+    margin-right:3px;
+    border-radius:40px 40px 40px 40px;
+    border:0px solid transparent;
+    color:#dfdfdf;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+    box-shadow:3px 2px rgba(0, 0, 0, 0.5);
+    outline:0;
+}
+
+#workspaces button * {
+    background:none;
+    outline:0;
+}
+
+#workspaces button:hover, #tags button:hover {
+    background:linear-gradient(0deg, rgba(154, 208, 2, 0.5), rgba(0, 0, 0, 0.5));
+    text-shadow:inherit;
+    margin-left:2px;
+    margin-right:3px;
+    border-radius:40px 40px 40px 40px;
+    border:0px solid transparent;
+    text-shadow:3px 3px rgba(154, 208, 2, 0.6);
+    box-shadow:3px 2px rgba(154, 208, 2, 0.5);
+}
+
+#workspaces button:hover label {
+    color:#a9df11;
+}
+
+#workspaces button.focused, #tags button.focused, #tags button.focused.occupied {
+    background:linear-gradient(0deg, rgba(238, 1, 10, 0.5), rgba(0, 0, 0, 0.5));
+    color:#efefef;
+    box-shadow:3px 2px rgba(238, 0, 10, 0.5);
+}
+#workspaces button.focused label {
+    color:#fe0219;
+}
+
+#workspaces button.focused:hover, #tags button.focused:hover, #tags button.focused.occupied:hover {
+    text-shadow:3px 3px rgba(238, 0, 10, 0.6);
+}
+
+#tags button.occupied {
+    background:linear-gradient(180deg, rgba(239, 175, 96, 0.5), rgba(0, 0, 0, 0.5));
+    color:#fff293;
+}
+
+#cava {
+    background:linear-gradient(0deg, rgba(238, 1, 10, 0.5), rgba(0, 0, 0, 0.3));
+    color:#fe0219;
+    padding-left:4px;
+    padding-right:2px;
+    text-shadow:3px 3px rgba(0, 0, 0, 0.4);
+}
+
+#keyboard-state {
+    padding-left:8px;
+    padding-right:5px;
+    background:linear-gradient(0deg, rgba(228, 207, 19, 0.5), rgba(0, 0, 0, 0.5));
+    border-radius:0px 40px 40px 0px;
+    box-shadow:3px 2px rgba(228, 207, 19, 0.4);
+    margin-right:4px;
+    margin-left:0px;
+    transition:all 0.2s ease 0s;
+}
+
+#keyboard-state label {
+    color:#f4df23;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.5);
+}
+
+#keyboard-state:hover {
+    background:linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(0, 0, 0, 0.5));
+    border-radius:0px 40px 40px 0px;
+    box-shadow:3px 2px rgba(150, 150, 150, 0.4);
+}
+
+#keyboard-state:hover label {
+    color:#efefef;
+    text-shadow:2px 2px rgba(60, 60, 60, 0.5);
+}
+
+#keyboard-state label.locked {
+    color:#ffffff;
+    text-shadow:2px 2px rgba(238, 0, 10, 0.5);
+}
+
+#image {
+    background:none;
+    border:none;
+    color:black;
+    box-shadow:2px 2px rgba(0, 0, 0, 0.3);
+}
+
+#battery, #idle_inhibitor, #pulseaudio.bluetooth, #temperature {
+    color:#6264fe;
+    background:linear-gradient(0deg, rgba(118, 112, 229, 0.5), rgba(0, 0, 0, 0.4));
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+    transition:all 0.2s ease 0s;
+}
+
+#battery:hover, #idle_inhibitor:hover, #pulseaudio.bluetooth:hover, #temperature:hover {
+    color:#efefef;
+    background:linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(0, 0, 0, 0.4));
+    text-shadow:2px 2px rgba(60, 60, 60, 0.6);
+}
+
+#pulseaudio.bluetooth, #temperature {
+    margin-left:0;
+    margin-right:0;
+    padding-left:11px;
+    padding-right:12px;
+}
+
+#pulseaudio.bluetooth {
+    border-radius:40px 40px 40px 40px;
+    margin-left:1px;
+    margin-right:3px;
+    padding-left:11px;
+    padding-right:13px;
+    box-shadow:3px 2px rgba(118, 112, 229, 0.5);
+}
+
+#pulseaudio:hover {
+    box-shadow:3px 2px rgba(150, 150, 150, 0.5);
+}
+
+#battery {
+    border-radius:0px 40px 40px 0px;
+    padding-left:10px;
+    padding-right:12px;
+    margin-left:0;
+    margin-right:3px;
+    box-shadow:3px 2px rgba(118, 112, 229, 0.4);
+}
+
+#battery.warning {
+    color:#f4df23;
+    border-radius:0px 40px 40px 0px;
+    background:linear-gradient(0deg, rgba(228, 207, 19, 0.5), rgba(0, 0, 0, 0.3));
+    margin-left:0;
+    margin-right:3px;
+    box-shadow:3px 2px rgba(224, 202, 16, 0.5);
+}
+
+#battery.critical {
+    color:#fe0219;
+    border-radius:0px 40px 40px 0px;
+    font-weight:bold;
+    background:linear-gradient(0deg, rgba(238, 0, 10, 0.5), rgba(0, 0, 0, 0.4));
+    margin-left:0px;
+    margin-right:4px;
+    box-shadow:3px 3px rgba(255, 255, 255, 0.5);
+}
+
+#idle_inhibitor {
+    border-radius:40px 0px 0px 40px;
+    padding-left:11px;
+    padding-right:10px;
+    margin-left:2px;
+    margin-right:0;
+}
+
+#bluetooth {
+    transition:all 0.2s ease 0s;
+}
+
+#bluetooth.on, #bluetooth.off, #bluetooth.disabled {
+    color:#fe0219;
+    background:linear-gradient(0deg, rgba(238, 0, 10, 0.5), rgba(0, 0, 0, 0.4));
+    margin-left:0;
+    margin-right:4px;
+    padding-left:11px;
+    padding-right:12px;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.7);
+    border-radius:0px 40px 40px 0px;
+    box-shadow:3px 2px rgba(283, 0, 10, 0.4);
+}
+
+#bluetooth.connected, #bluetooth.connected.pairable {
+    color:#a9df11;
+    background:linear-gradient(0deg, rgba(153, 207, 1, 0.5), rgba(0, 0, 0, 0.4));
+    margin-left:0;
+    margin-right:4px;
+    padding-left:11px;
+    padding-right:12px;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.7);
+    border-radius:0px 40px 40px 0px;
+    box-shadow:3px 2px rgba(153, 207, 1, 0.5);
+}
+
+#bluetooth.pairable:not(.connected), #bluetooth.discoverable {
+    color:#5254fe;
+    background:linear-gradient(0deg, rgba(108, 102, 218, 0.5), rgba(0, 0, 0, 0.1));
+    margin-left:0;
+    margin-right:4px;
+    padding-left:11px;
+    padding-right:12px;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.7);
+    border-radius:0px 40px 40px 0px;
+    box-shadow:3px 2px rgba(108, 102, 218, 0.4);
+}
+
+#bluetooth.discovering {
+    color:#f4df23;
+    background:linear-gradient(0deg, rgba(228, 207, 19, 0.5), rgba(0, 0, 0, 0.1));
+    margin-left:0;
+    margin-right:4px;
+    padding-left:11px;
+    padding-right:11px;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.7);
+    border-radius:0px 40px 40px 0px;
+    box-shadow:3px 2px rgba(228, 207, 19, 0.4);
+}
+
+#bluetooth.discovering:hover, #bluetooth.connected:hover, #bluetooth.discoverable:hover, #bluetooth.pairable:hover, #bluetooth.off:hover {
+    color:#efefef;
+    background:linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(0, 0, 0, 0.2));
+    text-shadow:2px 2px rgba(150, 150, 150, 0.5);
+    box-shadow:3px 2px rgba(100, 100, 100, 0.5);
+}
+
+#custom-clock, #network {
+    color:#ff4de7;
+    background:linear-gradient(0deg, rgba(175, 56, 219, 0.5), rgba(0, 0, 0, 0.4));
+    margin-left:0;
+    margin-right:4px;
+    padding-left:12px;
+    padding-right:10px;
+    border-radius:0px 40px 40px 0px;
+    text-shadow:2px 2px rgba(0, 0, 0, 0.6);
+    box-shadow:3px 2px rgba(175, 56, 219, 0.4);
+    transition:all 0.2s ease 0s;
+}
+
+#custom-clock:hover, #network:hover {
+    color:#efefef;
+    background:linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(0, 0, 0, 0.4));
+    text-shadow:2px 2px rgba(60, 60, 60, 0.6);
+    box-shadow:3px 2px rgba(150, 150, 150, 0.4);
+}

@@ -1,5 +1,6 @@
 {
-  "include": "~/.config/hypr/waybar/modules",
+  "include": "~/.config/waybar/modules",
+  "include": "~/.config/waybar/styles.css",
   "layer": "top",
   //"mode": "dock",
   "exclusive": true,
@@ -12,6 +13,6 @@
   "margin-right": 0,
 
   "modules-left": ["clock", "cpu", "memory", "disk", "battery"],
-  "modules-center": ["hyprland/workspaces"],
-  "modules-right": ["custom/cycle_wall", "network", "pulseaudio", "tray", "custom/power"],
+  "modules-center": ["sway/workspaces"],
+  "modules-right": ["sway/mode", "custom/cycle_wall", "network", "pulseaudio", "tray", "custom/power"],
 }
