@@ -9,7 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
      # inputs.nixos-cosmic.nixosModules.default
-     inputs.home-manager.nixosModules.default
+     #inputs.home-manager.nixosModules.default
     ];
    
   # XWayland
@@ -17,54 +17,6 @@
   enable = true;
   };
 
-# Uncomment for the AMD or Nvidia ( READ WITH CAUTION AND BEFORE YOU UNCOMMENT) 
-
-############ amdgpu setup #############
-#   Enable OpenGL
-#  hardware.opengl = {
-#    enable = true;
-#    driSupport = true;
-#    driSupport32Bit = true;
-#  };
-
-#  hardware.opengl.extraPackages = with pkgs; [
-#  amdvlk
-#  ];
-# For 32 bit applications
-#  hardware.opengl.extraPackages32 = with pkgs; [
-#  driversi686Linux.amdvlk
-#  ];
-#  
-#  # Load nvidia driver for Xorg and Wayland
-#  services.xserver.videoDrivers = ["amdgpu radeon"];
-#  
-#  hardware.nvidia = {
-#
-#    # Modesetting is required.
-#    modesetting.enable = true;
-#
-    # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-#    powerManagement.enable = false;
- #   # Fine-grained power management. Turns off GPU when not in use.
- #   # Experimental and only works on modern Nvidia GPUs (Turing or newer).
- #   powerManagement.finegrained = false;
-
-    # Use the NVidia open source kernel module (not to be confused with the
-    # independent third-party "nouveau" open source driver).
-    # Support is limited to the Turing and later architectures. Full list of
-    # supported GPUs is at:
-    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
-    # Only available from driver 515.43.04+
-    # Currently alpha-quality/buggy, so false is currently the recommended setting.
-#    open = false;
-
-    # Enable the Nvidia settings menu,
-# accessible via `nvidia-settings`.
-#    nvidiaSettings = true;
-
-    # Optionally, you may need to select the appropriate driver version for your specific GPU.
-#    package = config.boot.kernelPackages.nvidiaPackages.stable;
-#  };
 
   # Bootloader
   #boot.loader.grub.enable = true;
@@ -214,16 +166,15 @@
   # virtualisation.podman.dockerSocket.enable = true;
  
   #spices (virtualization)
-  services.spice-vdagentd.enable = true;  
- 
-  # LF file manager
-  # programs.lf.enable = true;
+  services.spice-vdagentd.enable = true; 
 
   # ZRAM
   zramSwap.enable = true;
  
   # zsh terminal
   programs.zsh.enable = true;
+
+  # terminal shell for all users
   users.defaultUserShell = pkgs.zsh;
 
   # Allow unfree packages
@@ -277,20 +228,6 @@
     nh
     nil
 
-    # zsh configs
-    zsh-z
-    zsh-bd
-    zsh-abbr
-    zsh-defer
-    zsh-zhooks
-    zsh-prezto
-    zsh-forgit
-    zsh-f-sy-h
-    zsh-nix-shell
-    zsh-clipboard
-    zsh-completions
-    zsh-powerlevel10k
-    zsh-autocomplete
 
     # system packages
     gzip
@@ -304,9 +241,6 @@
     zig
     cmake
     ninja
-    libsForQt5.full
-    libsForQt5.qt5.qtbase
-    qt6.full
     lm_sensors
     xsensors
     qt6.qtbase
@@ -332,7 +266,6 @@
     lunarvim
     distrobox
     lshw
-    rPackages.gbm
     gtk-layer-shell
     clipit
     gvfs
@@ -340,7 +273,6 @@
     libvirt
     neocmakelsp
     lua
-    toybox
     wayland-protocols
     cheese
     polkit_gnome
@@ -348,17 +280,20 @@
     volumeicon
     flameshot
     xorg.xkill
+    swww
+    fzf
    
    # hyprland / xfce4 / i3wm packages
     yazi
     yazi-unwrapped
-   # waypaper  #hyprland
-   # hyprpaper  #hyprland
+    waypaper  #hyprland
+    hyprpaper  #hyprland
     xfce.thunar-archive-plugin
     xfce.thunar
     xfce.thunar-volman
     dmenu
     rofi
+    quick-webapps
     autotiling-rs
     lxappearance
     xfce.xfce4-terminal
@@ -371,22 +306,20 @@
     networkmanager_dmenu
     clipmenu
     brightnessctl
-  #  nwg-look   #hyprland
+    nwg-look   #hyprland
     feh
     wl-clipboard  #hyprland
     wl-clipboard-x11   #hyprland
     wlogout
-    ranger
     variety
     clipit
     volumeicon
-    rofi-power-menu
     blueberry
-    # hyprland-protocols
+    hyprland-protocols
     libdrm
-  #  wayland    #hyprland
+    wayland    #hyprland
     wayland-protocols    #hyprland
-  #  xdg-desktop-portal-hyprland    #hyprland
+    xdg-desktop-portal-hyprland    #hyprland
     wofi
     kitty   #hyprland
     kitty-themes    #hyprland
@@ -396,34 +329,12 @@
     clipboard-jh
     clipit
     lxappearance-gtk2
+    pywal
 
     # waybar appllcations  : uncomment if waybar isnt working for hyprland
 
-     waybar
-    gtkmm3
-    jsoncpp
-    fmt
-    spdlog
-    #libgtk-3-dev #[gtk-layer-shell]
-    libgtkflow3
-    gobject-introspection #[gtk-layer-shell]
-    # libpulse #[Pulseaudio module]
-    libpulseaudio
-    libnl #[Network module]
-    libappindicator-gtk3 #[Tray module]
-    libdbusmenu-gtk3 #[Tray module]
-    libmpdclient #[MPD module]
-    #libsndio #[sndio module# ]
-    libsndfile
-    libevdev #[KeyboardState module]
-    # xkbregistry
-    xkbutils
-    xorg.xkbutils
-    upower #[UPower battery module]
-
    # smartcard applications
     pam_p11
-    #pam_usb
     nss
     nss_latest
     pkgs.pcscliteWithPolkit
@@ -441,15 +352,12 @@
     nodejs_22
     lua
     # python3
-    flam3
-    qosmic
-    xdg-desktop-portal-cosmic
 
    # gaming
     sc-controller
     gamescope
     protonup-qt
-    lutris
+    #lutris
     #steam-run
    
     # applications
@@ -466,7 +374,6 @@
     blueberry
     ladybird
     vscodium
-    eww
 
     # folders and themes
     nixos-icons
@@ -481,6 +388,11 @@
     fcitx5-material-color
     stilo-themes
     beauty-line-icon-theme
+    mint-themes
+    mint-y-icons
+    mint-l-theme
+    mint-x-icons
+    theme-jade1
     
     # polybar
     # polybarFull
@@ -502,7 +414,10 @@
       nerd-fonts.noto
       nerd-fonts.hack
       nerd-fonts.ubuntu
+      nerd-fonts.symbols-only
+      vimix-icon-theme
       terminus_font
+      tela-icon-theme
       jetbrains-mono
       powerline-fonts
       corefonts
@@ -521,16 +436,11 @@
    flake = "/etc/nixos/";
    };
 
-    # cosmic-comp (for clipboard - to copy things in cosmic)
-    #environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
-    #systemd.packages = [ pkgs.observatory ];
-    #systemd.services.monitord.wantedBy = [ "multi-user.target" ];
-
    # Hyprland window manager
-   # programs.hyprland.enable = true;
-   programs.waybar = { 
-   enable = true;
-   #systemd.target = "hyprland.target";
+     programs.hyprland.enable = true;
+     programs.waybar = { 
+     enable = true;
+     #systemd.target = "hyprland.target";
       };
  
     # withUWSM = true;
@@ -542,7 +452,7 @@
    enable = true;
    flake = "/etc/nixos/";
    flags = [
-   # "nix-update"
+   "nix-update"
     "nixpkgs"
     "-L" # print build logs
    ];
@@ -550,7 +460,7 @@
    randomizedDelaySec = "30min";
    dates = "24:00";
       };
-   #nix.settings.auto-optimise-store = true;
+   nix.settings.auto-optimise-store = true;
    #nix.gc = {
    #automatic = true;
    #dates = "Sun 24:00";
@@ -576,9 +486,9 @@
    # Thinkpad
     services.thinkfan.enable = true;
     #services.thinkfan.levels = [ "auto"];
-    services.tlp.enable = true;
+    #services.tlp.enable = true;
    
-   #services.power-profiles-daemon.enable = true;
+   services.power-profiles-daemon.enable = true;
 
 
   # List services that you want to enable:
@@ -609,33 +519,30 @@
   #  programs.steam.extest.enable = true;
     programs.gamescope.enable = true;
     programs.zsh.enableLsColors = true;
-    programs.zsh.enableCompletion = true;
     programs.zsh.enableBashCompletion = true;
     programs.zsh.autosuggestions.strategy = [
-     "history"
-      ];
+      "history"
+       ];
     programs.thunar.enable = true;
-    programs.zsh.autosuggestions.async = true;
     virtualisation.kvmgt.enable = true;
     programs.file-roller.enable = true;
      programs.coolercontrol = {
      enable = true;
-     nvidiaSupport = false;
        };
     programs.i3lock.enable = true;
-    #programs.sway.enable = true;
-    #programs.sway.xwayland.enable = true;
+    programs.sway.enable = true;
+    programs.sway.xwayland.enable = true;
     xdg.portal.wlr.enable = true;
-    #programs.sway.extraSessionCommands = 
-    #  ''
+    programs.sway.extraSessionCommands = 
+      ''
     # SDL:
-    #export SDL_VIDEODRIVER=wayland
+    export SDL_VIDEODRIVER=wayland
     # QT (needs qt5.qtwayland in systemPackages):
-    #export QT_QPA_PLATFORM=wayland-egl
-    #export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+    export QT_QPA_PLATFORM=wayland-egl
+    export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
     # Fix for some Java AWT applications (e.g. Android Studio),
     # use this if they aren't displayed properly:
-    #export _JAVA_AWT_WM_NONREPARENTING=1
+    export _JAVA_AWT_WM_NONREPARENTING=1
     # '';
 
  
@@ -656,27 +563,9 @@
   services.xserver.desktopManager.xfce.enableXfwm = true;
   services.xserver.windowManager.i3.enable = true;
   services.xserver.windowManager.i3.updateSessionEnvironment = true;
-  #services.displayManager.sddm.wayland.enable = true;
-  #services.displayManager.sddm.enable = true;
+    services.displayManager.ly.enable = true;
 
-  #services.desktopManager.cosmic.enable = true;
-  #services.displayManager.cosmic-greeter.enable = true;
-  #services.xserver.displayManager.lightdm.enable = true;
-  #services.xserver.displayManager.lightdm.greeters.slick.enable = true;
-  #services.desktopManager.cosmic.xwayland.enable = true;
-  services.displayManager.ly.enable = true;
-
-  # greetd
-  #services.greetd = {
-  #enable = true;
-  ## VT1 = 3;
-  #settings = {
-  #    default_session = {
-  #  command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd i3";
-  #      };
-  #    };
-  #  };
-
+ 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.ports = [

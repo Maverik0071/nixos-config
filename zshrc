@@ -15,10 +15,12 @@ export ZSH="$HOME/.oh-my-zsh"
 #ZSH_THEME="fino-time"
 #ZSH_THEME="fox"
 #ZSH_THEME="gnzh"
-ZSH_THEME="half-life"
+#ZSH_THEME="half-life"
 #ZSH_THEME="intheloop"
 #ZSH_THEME="kardan"
+#ZSH_THEME="eastwood"
 #ZSH_THEME="linuxonly"
+ZSH_THEME="nanotech"
 
 
 # Set list of themes to pick from when loading at random
@@ -118,16 +120,16 @@ source $ZSH/oh-my-zsh.sh
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=black,bold,underline"
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=black,bold,underline"
 
 #pfetch
 #fastfetch
 # neofetch
 #nitch
 
-source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+#source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 #source /home/densetsu/Documents/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -162,4 +164,6 @@ alias cp-config2git='sudo cp /etc/nixos/configuration.nix ~/Documents/github/nix
 alias github-nixos-config='~/Documents/github/nixos-config'
 alias distro-arch='xfce4-terminal -x distrobox enter arch'
 alias distro-ubuntu='xfce4-terminal -x distrobox enter ubuntu-server'
-
+alias setbalanced='powerprofilesctl set balanced'
+alias setpower-saver='powerprofilesctl set power-saver'
+alias setperformance='powerprofilesctl set performance'
