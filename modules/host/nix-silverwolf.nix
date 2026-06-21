@@ -17,56 +17,8 @@
   programs.xwayland = {
   enable = true;
   };
-
-# Uncomment for the AMD or Nvidia ( READ WITH CAUTION AND BEFORE YOU UNCOMMENT) 
-
-############ amdgpu setup #############
-#   Enable OpenGL
-   hardware.opengl = {
-    enable = true;
-  #  driSupport = true;
-  #  driSupport32Bit = true;
-  };
-
-  #hardware.opengl.extraPackages = with pkgs; [
-  #amdvlk
-  #];
-   # For 32 bit applications
-  #hardware.opengl.extraPackages32 = with pkgs; [
-  #driversi686Linux.amdvlk
-  #];
   
-  # Load nvidia driver for Xorg and Wayland
-  #services.xserver.videoDrivers = ["amdgpu"];
-    hardware.nvidia = {
-
-    # Modesetting is required.
-    modesetting.enable = true;
-
-    # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-    powerManagement.enable = false;
- #   # Fine-grained power management. Turns off GPU when not in use.
- #   # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-    powerManagement.finegrained = false;
-
-    # Use the NVidia open source kernel module (not to be confused with the
-    # independent third-party "nouveau" open source driver).
-    # Support is limited to the Turing and later architectures. Full list of
-    # supported GPUs is at:
-    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
-    # Only available from driver 515.43.04+
-    # Currently alpha-quality/buggy, so false is currently the recommended setting.
-    open = false;
-
-    # Enable the Nvidia settings menu,
-    # accessible via `nvidia-settings`.
-    nvidiaSettings = true;
-
-    # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
-
- ##################################
+  ##################################
 
   # Bootloader
   #boot.loader.grub.enable = true;
@@ -77,16 +29,18 @@
   #boot.loader.grub.useOSProber = true;
  
   boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 10;
+  boot.loader.systemd-boot.configurationLimit = 7;
   # boot.loader.systemd-boot.edk2-uefi-shell.enable = "true";
-  boot.loader.systemd-boot.consoleMode = "0"; # Try "2", "max", or specific resolutions like "1920x1080"
+  boot.loader.systemd-boot.consoleMode = "1"; # Try "2", "max", or specific resolutions like "1920x1080"
   boot.modprobeConfig.enable = true;
   #services.hddfancontrol.enable = true;
   
   # boot options based on cpu parameters
   # bboot.initrd.kernelModules = ["kvm-intel"];
-  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
-
+  #boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+   boot.kernelPackages = pkgs.linuxPackages_cachyos;
+  services.scx.enable = true; # by default uses scx_rustland scheduler
+  nix.package = pkgs.nix;
     
   #boot kernel parameters
   boot.kernelParams = [
@@ -101,7 +55,8 @@
   programs.direnv.nix-direnv.enable = true;
   programs.direnv.silent = true;    
 
-  networking.hostName = "wolvesden"; # Define your hostname.
+  networking.hostName = "cerberus"; # Define your hostname.
+  networking.domain = "example.com";
   #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -158,8 +113,8 @@
 
   # xdg portals
   xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde pkgs.xdg-desktop-portal-hyprland ];
-  xdg.portal.config.common.default = "kde";
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-hyprland ];
+  xdg.portal.config.common.default = "gtk";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -304,6 +259,8 @@
     hyprpolkitagent
     flameshot
     # xorg.xkill
+    liquidctl
+    lm_sensors
    
    # hyprland
     yazi
@@ -339,7 +296,6 @@
    
     # smartcard applications
     pam_p11
-    #pam_usb
     nss
     nss_latest
     pkgs.pcscliteWithPolkit
@@ -352,7 +308,6 @@
    # vim and programming langauges
     vim
     neovim
-    # lunarvim
     vimPlugins.nvim-treesitter-textsubjects
     nodejs_22
     lua
@@ -385,6 +340,9 @@
     signal-cli
     librewolf
     quick-webapps
+    proton-vpn
+    ptyxis
+    claude-code-bin
 
    # folders and themes
     nixos-icons
@@ -399,6 +357,7 @@
     fcitx5-material-color
     stilo-themes
     beauty-line-icon-theme
+    adapta-gtk-theme
    
    ];
    
@@ -420,6 +379,7 @@
       nerd-fonts.hack
       nerd-fonts.ubuntu
       terminus_font
+      terminus_font_ttf
       jetbrains-mono
       powerline-fonts
       corefonts
@@ -427,8 +387,8 @@
       jetbrains-mono
       udev-gothic
       hack-font
-   
-     ];    
+      nerd-fonts.hack
+ ];    
 
     # NH environment.sessionVariables
    programs.nh = {
@@ -441,10 +401,10 @@
  
    # Hyprland window manager
    programs.hyprland.enable = true;
-   #programs.waybar = { 
-   #enable = true;
-   #systemd.target = "hyprland.target";
-   #   };
+   programs.waybar = { 
+   enable = true;
+   systemd.target = "sway.target";
+      };
  
    #withUWSM = true;
    security.pam.services.hyprlock = {};
@@ -463,7 +423,7 @@
    randomizedDelaySec = "30min";
    dates = "24:00";
       };
-   #nix.settings.auto-optimise-store = true;
+   nix.settings.auto-optimise-store = true;
    #nix.gc = {
    #automatic = true;
    #dates = "Sun 24:00";
@@ -476,6 +436,8 @@
     "nix-2.17.1"
     "openssl-1.1.1w"
     "qtwebengine-5.15.19"
+    "librewolf-151.0.2-1"
+    "librewolf-unwrapped-151.0.2-1"
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -486,7 +448,10 @@
   #   enableSSHSupport = true;
   # };
    
-   services.power-profiles-daemon.enable = true;
+    services = {
+    power-profiles-daemon.enable = true;
+    tlp.pd.enable = true;
+     };
 
 
   # List services that you want to enable:
@@ -540,9 +505,11 @@
   #settings = {
   #    default_session = {
   #  command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd i3";
+  #command = "dms-greeter --command niri -p /usr/share/quickshell/dms";
   #      };
- #    };
+  #    };
   #  };
+
       
    # Security Polkit for Military CAC Card
     security.polkit.extraConfig = ''
@@ -559,12 +526,41 @@
   # List services that you want to enable:
   services.displayManager.dms-greeter = {
     enable = true;
-    compositor.name = "hyprland";
-    };
-    
+    compositor = { 
+    name = "hyprland";
+    customConfig = ''
+      # Optional custom compositor configuration
+    '';
+  };
+
+  # Sync your user's DankMaterialShell theme with the greeter. You'll probably want this
+  configHome = "/home/densetsu";
+
+  # Custom config files for non-standard config locations
+  configFiles = [
+    "/home/densetsu/.config/DankMaterialShell/settings.json"
+  ];
+
+  # Save the logs to a file
+  logs = {
+    save = true; 
+    path = "/tmp/dms-greeter.log";
+  };
+
+  # Custom Quickshell Package    
+  quickshell.package = pkgs.quickshell;
+  };
+
+
+   # sway manager
+   programs = {
+   sway.enable = true;
+      };
+
     services = {
-   desktopManager.plasma6.enable = true;
-   };
+   # displayManager.ly.enable = true;
+   # desktopManager.plasma6.enable = true;
+      };
 
   
   # OpenSSH
