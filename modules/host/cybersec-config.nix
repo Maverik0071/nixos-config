@@ -9,7 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
      # inputs.nixos-cosmic.nixosModules.default
-     inputs.home-manager.nixosModules.default
+      inputs.home-manager.nixosModules.default
     ];
    
   # XWayland
@@ -74,7 +74,7 @@
   #boot.loader.grub.useOSProber = false;
  
   boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 5;
+  boot.loader.systemd-boot.configurationLimit = 7;
   boot.modprobeConfig.enable = true;
   # services.hddfancontrol.enable = true;
   
@@ -105,8 +105,17 @@
   programs.direnv.nix-direnv.enable = true;
   programs.direnv.silent = true;    
 
-  networking.hostName = "wolvesden"; # Define your hostname.
+  networking.hostName = "cerberus"; # Define your hostname.
+  networking.domain = "example.com";
+  
+  # configuration.nix
+  #networking.fqdn = "${networking.hostName}.${networking.domain}";
   #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  
+  #networking.hosts = {
+  #"127.0.0.1" = [ "://example.com" "myhost" ];
+  #"::1"       = [ "://example.com" "myhost" ];
+  # };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -139,21 +148,13 @@
   displayManager.sessionCommands = ''
   xset r rate 200 35 & 
    '';
-  };
-
-  # gnome desktop
-  programs.dconf.enable = true;
-  nixpkgs.config.allowAliases = false;
-  services.sysprof.enable = true;
-  # nixpkgs.config.firefox.enableGnomeExtensions = true;
+  }; 
  
-  # hyprland
-  # programs.hyprland.enable = true;
 
   # Configure keymap in X11
   services.xserver = {
     xkb.layout = "us";
-    xkbVariant = "";
+    xkb.variant = "";
   };
 
   # enable flatpak
@@ -161,17 +162,17 @@
  
   # xdg portals
   xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ 
-  # pkgs.xdg-desktop-portal-cosmic 
-  #pkgs.xdg-desktop-portal-hyprland
-  pkgs.xdg-desktop-portal-wlr];
+  xdg.portal.extraPortals = [  
+  pkgs.xdg-desktop-portal-hyprland
+  # pkgs.xdg-desktop-portal-wlr
+  ];
   xdg.portal.config.common.default = " ";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -216,9 +217,6 @@
   #spices (virtualization)
   services.spice-vdagentd.enable = true;  
  
-  # LF file manager
-  # programs.lf.enable = true;
-
   # ZRAM
   zramSwap.enable = true;
  
@@ -240,14 +238,6 @@
   environment.systemPackages = with pkgs; [
      #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
    # bash and zsh
-    nix-bash-completions
-    nix-zsh-completions
-    zsh-autocomplete
-    zsh-autosuggestions
-    zsh-powerlevel10k
-    zsh-syntax-highlighting
-    zsh-history-substring-search
-    zsh-fast-syntax-highlighting
     nixd
     zsh-nix-shell
     nix-search-cli
@@ -277,21 +267,7 @@
     nh
     nil
 
-    # zsh configs
-    zsh-z
-    zsh-bd
-    zsh-abbr
-    zsh-defer
-    zsh-zhooks
-    zsh-prezto
-    zsh-forgit
-    zsh-f-sy-h
-    zsh-nix-shell
-    zsh-clipboard
-    zsh-completions
-    zsh-powerlevel10k
-    zsh-autocomplete
-
+    
     # system packages
     gzip
     wget
@@ -304,23 +280,16 @@
     zig
     cmake
     ninja
-    libsForQt5.full
-    libsForQt5.qt5.qtbase
-    qt6.full
     lm_sensors
     xsensors
-    qt6.qtbase
     gnumake
     gnumake42
     zsh
-    fzf-zsh
     tmux
     fastfetch
     lsd
     zsh
-    nitrogen
     pfetch
-    neofetch
     gh
     pasystray
     dhcpdump
@@ -328,41 +297,29 @@
     postgresql
     w3m
     usbimager
-    wezterm
-    lunarvim
     distrobox
     lshw
     rPackages.gbm
     gtk-layer-shell
-    clipit
     gvfs
     topgrade
     libvirt
     neocmakelsp
     lua
-    toybox
     wayland-protocols
     cheese
     polkit_gnome
     hyprpolkitagent
     volumeicon
     flameshot
-    xorg.xkill
    
-   # hyprland / xfce4 / i3wm packages
-    yazi
-    yazi-unwrapped
-   # waypaper  #hyprland
-   # hyprpaper  #hyprland
-    xfce.thunar-archive-plugin
-    xfce.thunar
-    xfce.thunar-volman
+   # hyprland 
+    # waypaper  #hyprland
+    hyprpaper  #hyprland
     dmenu
     rofi
     autotiling-rs
     lxappearance
-    xfce.xfce4-terminal
-    xfce.xfce4-settings
     dunst
     mako
     pavucontrol
@@ -371,55 +328,25 @@
     networkmanager_dmenu
     clipmenu
     brightnessctl
-  #  nwg-look   #hyprland
+    nwg-look   #hyprland
     feh
     wl-clipboard  #hyprland
     wl-clipboard-x11   #hyprland
     wlogout
     ranger
-    variety
-    clipit
     volumeicon
     rofi-power-menu
-    blueberry
     # hyprland-protocols
     libdrm
-  #  wayland    #hyprland
     wayland-protocols    #hyprland
-  #  xdg-desktop-portal-hyprland    #hyprland
     wofi
     kitty   #hyprland
     kitty-themes    #hyprland
     swaybg  #hyprland
     gnumake
     gnumake42
-    clipboard-jh
-    clipit
-    lxappearance-gtk2
-
-    # waybar appllcations  : uncomment if waybar isnt working for hyprland
-
-     waybar
-    gtkmm3
-    jsoncpp
-    fmt
-    spdlog
-    #libgtk-3-dev #[gtk-layer-shell]
-    libgtkflow3
-    gobject-introspection #[gtk-layer-shell]
-    # libpulse #[Pulseaudio module]
-    libpulseaudio
-    libnl #[Network module]
-    libappindicator-gtk3 #[Tray module]
-    libdbusmenu-gtk3 #[Tray module]
-    libmpdclient #[MPD module]
-    #libsndio #[sndio module# ]
-    libsndfile
-    libevdev #[KeyboardState module]
-    # xkbregistry
-    xkbutils
-    xorg.xkbutils
     upower #[UPower battery module]
+    upower-notify
 
    # smartcard applications
     pam_p11
@@ -436,15 +363,10 @@
    # vim and programming langauges
     vim
     neovim
-    lunarvim
     vimPlugins.nvim-treesitter-textsubjects
     nodejs_22
     lua
-    # python3
-    flam3
-    qosmic
-    xdg-desktop-portal-cosmic
-
+    
    # gaming
     sc-controller
     gamescope
@@ -454,7 +376,6 @@
    
     # applications
     virt-manager
-    sublime4
     gnome-boxes
     alacritty
     alacritty-graphics
@@ -463,28 +384,25 @@
     swaybg
     hyprpaper
     brave
-    blueberry
-    ladybird
     vscodium
     eww
+    pam
+    zed-editor
 
     # folders and themes
     nixos-icons
     material-icons
     material-design-icons
     sweet-folders
-    sweet
     papirus-nord
     papirus-folders
     catppuccin
-    ubuntu-themes
     fcitx5-material-color
-    stilo-themes
     beauty-line-icon-theme
+    nordzy-icon-theme
+    nordic
     
-    # polybar
-    # polybarFull
-   
+    
    ];
    
    # fonts, folders, themes, icons
@@ -521,20 +439,10 @@
    flake = "/etc/nixos/";
    };
 
-    # cosmic-comp (for clipboard - to copy things in cosmic)
-    #environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
-    #systemd.packages = [ pkgs.observatory ];
-    #systemd.services.monitord.wantedBy = [ "multi-user.target" ];
-
+    
    # Hyprland window manager
-   # programs.hyprland.enable = true;
-   programs.waybar = { 
-   enable = true;
-   #systemd.target = "hyprland.target";
-      };
- 
-    # withUWSM = true;
-    #security.pam.services.hyprlock = {};
+    programs.hyprland.enable = true;
+    security.pam.services.hyprlock = {};
  
 
    # nix grub generations
@@ -576,9 +484,9 @@
    # Thinkpad
     services.thinkfan.enable = true;
     #services.thinkfan.levels = [ "auto"];
-    services.tlp.enable = true;
+    #services.tlp.enable = true;
    
-   #services.power-profiles-daemon.enable = true;
+   services.power-profiles-daemon.enable = true;
 
 
   # List services that you want to enable:
@@ -617,28 +525,56 @@
     programs.thunar.enable = true;
     programs.zsh.autosuggestions.async = true;
     virtualisation.kvmgt.enable = true;
-    programs.file-roller.enable = true;
+    #programs.file-roller.enable = true;
      programs.coolercontrol = {
      enable = true;
-     nvidiaSupport = false;
+    # nvidiaSupport = false;
        };
-    programs.i3lock.enable = true;
-    programs.sway.enable = true;
-    programs.sway.xwayland.enable = true;
-    xdg.portal.wlr.enable = true;
-    programs.sway.extraSessionCommands = 
-      ''
-    # SDL:
-    export SDL_VIDEODRIVER=wayland
-    # QT (needs qt5.qtwayland in systemPackages):
-    export QT_QPA_PLATFORM=wayland-egl
-    export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-    # Fix for some Java AWT applications (e.g. Android Studio),
-    # use this if they aren't displayed properly:
-    export _JAVA_AWT_WM_NONREPARENTING=1
-    # '';
+    services.nscd.enableNsncd = true;
 
- 
+    # Dankshell
+    programs.dms-shell.enable = true;
+
+    #Dankshell greeter
+    programs.dms-shell.systemd.enable = true;
+    
+    services.displayManager.dms-greeter = {
+       enable = true;
+       compositor = {
+       name = "hyprland";
+       customConfig = ''
+      # Optional custom compositor configuration
+          '';
+       #package = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          };
+
+       # Sync your user's DankMaterialShell theme with the greeter. You'll probably want this
+       configHome = "/home/densetsu";
+
+      # Custom config files for non-standard config locations
+       configFiles = [
+        "/home/densetsu/.config/DankMaterialShell/settings.json"
+         ];
+
+      # Save the logs to a file
+       logs = {
+       save = true; 
+       path = "/tmp/dms-greeter.log";
+        };
+
+       # Custom Quickshell Package    
+       quickshell.package = pkgs.quickshell;
+        };
+       
+    programs.dms-shell.enableDynamicTheming = true;
+    programs.dms-shell.systemd.target = "graphical-session.target";
+    services.upower.enable = true; 
+    services.greetd.enable = true;
+
+    security.pam.services.greetd = {
+      fprintAuth = true;  # Fingerprint via pam_fprintd
+      u2fAuth = true;     # Security key via pam_u2f (configure security.pam.u2f options)
+    };
 
     security.polkit.extraConfig = ''
       polkit.addRule(function(action, subject) {
@@ -650,29 +586,13 @@
   '';  
              
    
-  # cosmic-desktop & other desktop services
-  # List services that you want to enable:
-  services.xserver.desktopManager.xfce.enable = true;
-  services.xserver.desktopManager.xfce.enableXfwm = true;
-  services.xserver.windowManager.i3.enable = true;
-  services.xserver.windowManager.i3.updateSessionEnvironment = true;
-  #services.displayManager.sddm.wayland.enable = true;
-  #services.displayManager.sddm.enable = true;
-
-  #services.desktopManager.cosmic.enable = true;
-  #services.displayManager.cosmic-greeter.enable = true;
-  #services.xserver.displayManager.lightdm.enable = true;
-  #services.xserver.displayManager.lightdm.greeters.slick.enable = true;
-  #services.desktopManager.cosmic.xwayland.enable = true;
-  services.displayManager.ly.enable = true;
-
   # greetd
   #services.greetd = {
   #enable = true;
-  ## VT1 = 3;
+  # VT1 = 3;
   #settings = {
   #    default_session = {
-  #  command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd i3";
+  #  command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd hyprland";
   #      };
   #    };
   #  };
@@ -696,6 +616,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.11"; # Did you read the comment?
+  system.stateVersion = "26.11"; # Did you read the comment?
 
 }
