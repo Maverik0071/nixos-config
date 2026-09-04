@@ -105,8 +105,8 @@
   programs.direnv.nix-direnv.enable = true;
   programs.direnv.silent = true;    
 
-  networking.hostName = "cerberus"; # Define your hostname.
-  networking.domain = "example.com";
+  networking.hostName = "silverwolf-nix"; # Define your hostname.
+  networking.domain = "";
   
   # configuration.nix
   #networking.fqdn = "${networking.hostName}.${networking.domain}";
@@ -397,11 +397,20 @@
     papirus-nord
     papirus-folders
     catppuccin
-    fcitx5-material-color
+    fcitx5-nord
     beauty-line-icon-theme
     nordzy-icon-theme
     nordic
-    
+    papirus-nord
+    powertop
+    fprintd
+
+    # Claude Code
+    claude-code
+    claude-agent-acp
+    # claude-mergetool
+    # claude-code-router
+    # claude-usage-tracker
     
    ];
    
@@ -531,6 +540,9 @@
     # nvidiaSupport = false;
        };
     services.nscd.enableNsncd = true;
+    services.fprintd.enable =  true;
+    #services.fprintd.tod.enable = true;
+     services.fprintd.package = if config.services.fprintd.tod.enable then pkgs.fprintd-tod else pkgs.fprintd;
 
     # Dankshell
     programs.dms-shell.enable = true;
