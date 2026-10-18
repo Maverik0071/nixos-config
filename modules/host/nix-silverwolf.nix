@@ -1,4 +1,4 @@
-
+# Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
@@ -9,45 +9,87 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
      # inputs.nixos-cosmic.nixosModules.default
-     #inputs.home-manager.nixosModules.default
-     #./densetsu/boot.nix
+     # inputs.home-manager.nixosModules.default
     ];
    
   # XWayland
   programs.xwayland = {
   enable = true;
   };
+
+# Uncomment for the AMD or Nvidia ( READ WITH CAUTION AND BEFORE YOU UNCOMMENT) 
+
+############ amdgpu setup #############
+ #  Enable OpenGL
+     hardware.opengl = {
+     enable = true;
+ #    driSupport = true;
+ #    driSupport32Bit = true;
+       };
   
-  ##################################
+    # Load nvidia driver for Xorg and Wayland
+   # services.xserver.videoDrivers = ["amdgpu radeon"];
+  
+    hardware.nvidia = {
+
+    # Modesetting is required.
+    modesetting.enable = true;
+
+    # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
+    powerManagement.enable = false;
+    # Fine-grained power management. Turns off GPU when not in use.
+    # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+      powerManagement.finegrained = false;
+
+    # Use the NVidia open source kernel module (not to be confused with the
+    # independent third-party "nouveau" open source driver).
+    # Support is limited to the Turing and later architectures. Full list of
+    # supported GPUs is at:
+    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
+    # Only available from driver 515.43.04+
+    # Currently alpha-quality/buggy, so false is currently the recommended setting.
+     open = false;
+
+    # Enable the Nvidia settings menu,
+    # accessible via `nvidia-settings`.
+     nvidiaSettings = true;
+
+    # Optionally, you may need to select the appropriate driver version for your specific GPU.
+    # package = config.boot.kernelPackages.nvidiaPackages.stable;
+     };
 
   # Bootloader
   #boot.loader.grub.enable = true;
-  #boot.loader.grub.efiSupport =false;
-  #boot.loader.grub.device = "/dev/sda/";
+  #boot.loader.grub.device = "nodev";
   #boot.loader.grub.fontSize = "20";
   #boot.loader.grub.configurationLimit = 7;
-  #boot.loader.grub.useOSProber = true;
+  #boot.loader.grub.useOSProber = false;
  
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 7;
-  # boot.loader.systemd-boot.edk2-uefi-shell.enable = "true";
-  boot.loader.systemd-boot.consoleMode = "1"; # Try "2", "max", or specific resolutions like "1920x1080"
   boot.modprobeConfig.enable = true;
-  #services.hddfancontrol.enable = true;
+  # services.hddfancontrol.enable = true;
   
   # boot options based on cpu parameters
-  # bboot.initrd.kernelModules = ["kvm-intel"];
+  boot.initrd.kernelModules = ["amd"];
   #boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
-   boot.kernelPackages = pkgs.linuxPackages_cachyos;
-  services.scx.enable = true; # by default uses scx_rustland scheduler
-  nix.package = pkgs.nix;
+
+  # boot kernel modules
+  #boot.extraModulePackages = with config.boot.kernelPackages; 
+  #   [ pkgs.linuxKernel.packages.linux_xanmod_latest.tp_smapi ];
+  
+  # boot kernel extra modified configurations
+  #boot.extraModprobeConfig =''
+  #options thinkpad_acpi=fancontrol=1 
+  #options usbcore
+  #'';
     
   #boot kernel parameters
   boot.kernelParams = [
    "quiet"
    "splash"
   ];
-  #boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   #direnv
   programs.direnv.enable = true;
@@ -55,9 +97,17 @@
   programs.direnv.nix-direnv.enable = true;
   programs.direnv.silent = true;    
 
-  networking.hostName = "cerberus"; # Define your hostname.
+  networking.hostName = "silverwolf"; # Define your hostname.
   networking.domain = "example.com";
-  #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  
+  # configuration.nix
+  # networking.fqdn = "${networking.hostName}.${networking.domain}";
+   networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  
+  #networking.hosts = {
+  #"127.0.0.1" = [ "://example.com" "myhost" ];
+  #"::1"       = [ "://example.com" "myhost" ];
+  # };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -90,51 +140,44 @@
   displayManager.sessionCommands = ''
   xset r rate 200 35 & 
    '';
-  };
+  }; 
+ 
 
-   # Configure keymap in X11
+  # Configure keymap in X11
   services.xserver = {
     xkb.layout = "us";
-    xkbVariant = "";
+    xkb.variant = "";
   };
 
   # enable flatpak
   services.flatpak.enable = true;
-  
-  # Automatically add Flathub on boot
-  systemd.services.flatpak-repo = {
-    wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.flatpak ];
-    script = ''
-      flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    '';
-  };
-
-
+ 
   # xdg portals
   xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-hyprland ];
-  xdg.portal.config.common.default = "gtk";
+  xdg.portal.extraPortals = [  
+  pkgs.xdg-desktop-portal-hyprland
+  # pkgs.xdg-desktop-portal-wlr
+  ];
+  xdg.portal.config.common.default = " ";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
-    # pulse.enable = true;
+    pulse.enable = true;
     # If you want to use JACK applications, uncomment this
-    # jack.enable = true;
+    jack.enable = true;
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     #media-session.enable = true;
-    };
-
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -166,7 +209,6 @@
   #spices (virtualization)
   services.spice-vdagentd.enable = true;  
  
- 
   # ZRAM
   zramSwap.enable = true;
  
@@ -181,14 +223,15 @@
   nix.settings.experimental-features = [ "nix-command flakes"];
  
    # Set default editor to vim
-  environment.variables.EDITOR = "sublime4";
+  environment.variables.EDITOR = "lvim";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  
    # bash and zsh
     nixd
+    zsh-nix-shell
     nix-search-cli
     pkgs.nvd
     nix-output-monitor
@@ -218,7 +261,6 @@
 
     
     # system packages
-    gzip
     wget
     curl
     pkgs.kdePackages.ark
@@ -231,13 +273,15 @@
     ninja
     lm_sensors
     xsensors
-    zsh
+    gnumake
+    gnumake42
     tmux
     fastfetch
     lsd
-    nitrogen
+    zsh
     pfetch
     gh
+    pasystray
     dhcpdump
     btop
     postgresql
@@ -252,50 +296,50 @@
     libvirt
     neocmakelsp
     lua
-    toybox
-    wayland-protocols
     cheese
-    polkit_gnome
-    hyprpolkitagent
-    flameshot
-    # xorg.xkill
-    liquidctl
-    lm_sensors
+    xclip
+    wl-clipboard-x11
+    xclicker  
+    
    
-   # hyprland
-    yazi
-    yazi-unwrapped
-    waypaper  #hyprland
+   # hyprland 
+    # waypaper  #hyprland
     hyprpaper  #hyprland
     dmenu
     rofi
+    lxappearance
+    dunst
     mako
     pavucontrol
     jgmenu
     picom
     networkmanager_dmenu
+    clipmenu
     brightnessctl
     nwg-look   #hyprland
     feh
     wl-clipboard  #hyprland
     wl-clipboard-x11   #hyprland
     wlogout
-    hyprpolkitagent
-    hyprland-protocols
+    ranger
+    rofi-power-menu
+    # hyprland-protocols
     libdrm
-    wayland    #hyprland
     wayland-protocols    #hyprland
-    xdg-desktop-portal-hyprland    #hyprland
     wofi
     kitty   #hyprland
     kitty-themes    #hyprland
     swaybg  #hyprland
     gnumake
     gnumake42
+    upower #[UPower battery module]
+    upower-notify
+    hyprpolkitagent
+    
 
-   
-    # smartcard applications
+   # smartcard applications
     pam_p11
+    #pam_usb
     nss
     nss_latest
     pkgs.pcscliteWithPolkit
@@ -311,54 +355,54 @@
     vimPlugins.nvim-treesitter-textsubjects
     nodejs_22
     lua
-    python3
-    flam3
-      
+    zig
+    
    # gaming
     sc-controller
     gamescope
     protonup-qt
     lutris
-    steam-run
+    #steam-run
    
     # applications
     virt-manager
-    sublime4
     gnome-boxes
     alacritty
     alacritty-graphics
     kdePackages.okular
-    kdePackages.kate
-    kdePackages.dolphin
-    kdePackages.xdg-desktop-portal-kde
-    libreoffice-still 
-    hyprpaper
+    libreoffice-still
+    swaybg
     brave
-    ladybird
+    vscodium
+    eww
+    pam
     zed-editor
-    signal-desktop
-    signal-cli
-    librewolf
-    quick-webapps
-    proton-vpn
-    ptyxis
-    claude-code-bin
+    mousepad
+    gedit
 
-   # folders and themes
+    # folders and themes
     nixos-icons
     material-icons
     material-design-icons
     sweet-folders
-    sweet
     papirus-nord
     papirus-folders
     catppuccin
-    ubuntu-themes
-    fcitx5-material-color
-    stilo-themes
+    fcitx5-nord
     beauty-line-icon-theme
-    adapta-gtk-theme
-   
+    nordzy-icon-theme
+    nordic
+    papirus-nord
+    powertop
+    fprintd
+
+    # Claude Code
+    claude-code
+    claude-agent-acp
+    # claude-mergetool
+    # claude-code-router
+    # claude-usage-tracker
+    
    ];
    
    # fonts, folders, themes, icons
@@ -370,16 +414,13 @@
       font-awesome_4
       source-han-sans
       open-sans
-      hermit
       openmoji-color
-      nerd-fonts.meslo-lg
-      meslo-lgs-nf
+      hermit
       source-code-pro
       nerd-fonts.noto
       nerd-fonts.hack
       nerd-fonts.ubuntu
       terminus_font
-      terminus_font_ttf
       jetbrains-mono
       powerline-fonts
       corefonts
@@ -387,8 +428,8 @@
       jetbrains-mono
       udev-gothic
       hack-font
-      nerd-fonts.hack
- ];    
+   
+     ];    
 
     # NH environment.sessionVariables
    programs.nh = {
@@ -398,16 +439,10 @@
    flake = "/etc/nixos/";
    };
 
- 
+    
    # Hyprland window manager
-   programs.hyprland.enable = true;
-   programs.waybar = { 
-   enable = true;
-   systemd.target = "sway.target";
-      };
- 
-   #withUWSM = true;
-   security.pam.services.hyprlock = {};
+    programs.hyprland.enable = true;
+    security.pam.services.hyprlock = {};
  
 
    # nix grub generations
@@ -423,7 +458,7 @@
    randomizedDelaySec = "30min";
    dates = "24:00";
       };
-   nix.settings.auto-optimise-store = true;
+   #nix.settings.auto-optimise-store = true;
    #nix.gc = {
    #automatic = true;
    #dates = "Sun 24:00";
@@ -436,8 +471,6 @@
     "nix-2.17.1"
     "openssl-1.1.1w"
     "qtwebengine-5.15.19"
-    "librewolf-151.0.2-1"
-    "librewolf-unwrapped-151.0.2-1"
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -447,17 +480,20 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-   
-    services = {
-    power-profiles-daemon.enable = true;
-    tlp.pd.enable = true;
-     };
+
+      
+   services.power-profiles-daemon.enable = true;
+   services.asusd.enable = true;
+   services.cardwired.enable = true;
+   nix.settings.use-xdg-base-directories = true;
+   # use-xdg-base-directories = true;
 
 
   # List services that you want to enable:
     services.sshd.enable = true;
     services.pcscd.enable = true;
     security.pam.p11.enable = true;
+  #  services.teamviewer.enable = true;
     services.postgresql.enable = true;
     services.tailscale.enable = true;
     services.gvfs.enable = true;
@@ -478,6 +514,8 @@
 
   # list of programs with services
     programs.steam.enable = true;
+    programs.rog-control-center.enable = true;
+   
   #  programs.steam.extest.enable = true;
     programs.gamescope.enable = true;
     programs.zsh.enableLsColors = true;
@@ -486,90 +524,91 @@
     programs.zsh.autosuggestions.strategy = [
      "history"
       ];
+    programs.thunar.enable = true;
     programs.zsh.autosuggestions.async = true;
     virtualisation.kvmgt.enable = true;
-    programs.coolercontrol = {
+    #programs.file-roller.enable = true;
+     programs.coolercontrol = {
      enable = true;
-   #  nvidiaSupport = false;
+    # nvidiaSupport = false;
        };
-      
-   # Dank Shell
-     programs.dms-shell = {
-     enable = true;
-     };
-   
-   # greetd
-  #services.greetd = {
-  #enable = true;
-  ## VT1 = 3;
-  #settings = {
-  #    default_session = {
-  #  command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd i3";
-  #command = "dms-greeter --command niri -p /usr/share/quickshell/dms";
-  #      };
-  #    };
-  #  };
+    services.nscd.enableNsncd = true;
+    services.fprintd.enable =  true;
+    #services.fprintd.tod.enable = true;
+     services.fprintd.package = if config.services.fprintd.tod.enable then pkgs.fprintd-tod else pkgs.fprintd;
 
-      
-   # Security Polkit for Military CAC Card
+    # Dankshell
+    programs.dms-shell.enable = true;
+
+    #Dankshell greeter
+    programs.dms-shell.systemd.enable = true;
+    
+    services.displayManager.dms-greeter = {
+       enable = true;
+       compositor = {
+       name = "hyprland";
+       customConfig = ''
+      # Optional custom compositor configuration
+          '';
+       #package = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          };
+
+       # Sync your user's DankMaterialShell theme with the greeter. You'll probably want this
+       configHome = "/home/densetsu";
+
+      # Custom config files for non-standard config locations
+       configFiles = [
+        "/home/densetsu/.config/DankMaterialShell/settings.json"
+         ];
+
+      # Save the logs to a file
+       logs = {
+       save = true; 
+       path = "/tmp/dms-greeter.log";
+        };
+
+       # Custom Quickshell Package    
+       quickshell.package = pkgs.quickshell;
+        };
+       
+    # programs.dms-shell.enableDynamicTheming = true;
+    programs.dms-shell.systemd.target = "graphical-session.target";
+    services.upower.enable = true; 
+    services.greetd.enable = true;
+
+    security.pam.services.greetd = {
+      fprintAuth = true;  # Fingerprint via pam_fprintd
+      u2fAuth = true;     # Security key via pam_u2f (configure security.pam.u2f options)
+    };
+
     security.polkit.extraConfig = ''
       polkit.addRule(function(action, subject) {
         if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
           subject.isInGroup("wheel")) {
-        return polkit.Result.YES;
+          return polkit.Result.YES;
         }
       });
   '';  
              
-       
-  # cosmic-desktop & other desktop services
-  # List services that you want to enable:
-  services.displayManager.dms-greeter = {
-    enable = true;
-    compositor = { 
-    name = "hyprland";
-    customConfig = ''
-      # Optional custom compositor configuration
-    '';
-  };
+   
+  # greetd
+  #services.greetd = {
+  #enable = true;
+  # VT1 = 3;
+  #settings = {
+  #    default_session = {
+  #  command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd hyprland";
+  #      };
+  #    };
+  #  };
 
-  # Sync your user's DankMaterialShell theme with the greeter. You'll probably want this
-  configHome = "/home/densetsu";
-
-  # Custom config files for non-standard config locations
-  configFiles = [
-    "/home/densetsu/.config/DankMaterialShell/settings.json"
-  ];
-
-  # Save the logs to a file
-  logs = {
-    save = true; 
-    path = "/tmp/dms-greeter.log";
-  };
-
-  # Custom Quickshell Package    
-  quickshell.package = pkgs.quickshell;
-  };
-
-
-   # sway manager
-   programs = {
-   sway.enable = true;
-      };
-
-    services = {
-   # displayManager.ly.enable = true;
-   # desktopManager.plasma6.enable = true;
-      };
-
-  
-  # OpenSSH
+  # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.ports = [
   22 80
    ];
 
-  # Open ports in the firewall
+  # Open ports in the firewall.
    networking.firewall.allowedTCPPorts = [ 22 80 443 ];
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -584,4 +623,4 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "26.11"; # Did you read the comment?
 
- }
+}

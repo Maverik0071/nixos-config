@@ -61,7 +61,7 @@
         #   nixos-cosmic.nixosModules.default
         #  inputs.home-manager.nixosModules.default
           ./configuration.nix
-	  # inputs.nixos-cachyos-kernel.nixosModules.default
+	   inputs.nixos-cachyos-kernel.nixosModules.default
 	   chaotic.nixosModules.default # IMPORTANT
 	#  ./densetsu/boot.nix
       ];
