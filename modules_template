@@ -1,0 +1,19 @@
+{ config, pkgs, ... }:
+
+{
+  # Add packages to the system
+  environment.systemPackages = with pkgs; [
+    vim
+    git
+    htop
+  ];
+
+  # Enable and configure a service
+  services.openssh = {
+    enable = true;
+    permitRootLogin = "no";
+  };
+
+  # Enable a program (like bash completion)
+  programs.bash.enable = true;
+}
